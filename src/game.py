@@ -15,7 +15,7 @@ class Game(object):
 		self.listeners = []
 		self.game_state = GameState()
 
-	def add_agent(self, agent, team):
+	def add_agent(self, agent, state, team):
 
 		# check valid team
 		if team not in (0,1):
@@ -23,6 +23,7 @@ class Game(object):
 			return
 
 		self.agents[team].append(agent)
+		self.game_state.states[team].append(state)
 
 	def add_listener(self, listener):
 		self.listeners.append(listener)
@@ -39,12 +40,12 @@ class Game(object):
 		self.run_team(1)
 
 		# notify listeners
-		map(lambda l: l.handle_loop(self.gameState), self.listeners)
+		map(lambda l: l.handle_loop(self.game_state), self.listeners)
 
 	def run_agent(self, agent, state):
 		action    = agent.choose_action(state)
-		new_state = transition_model.apply_action(state, action)
-		reward    = reward_model.get_reward(state, action, new_state)
+		new_state = self.transition_model.apply_action(state, action)
+		reward    = self.reward_model.get_reward(state, action, new_state)
 
 		agent.observe_transition(state, action, reward, new_state)
 
@@ -53,7 +54,7 @@ class Game(object):
 
 class GameListener(object):
 
-	def handle_loop(self, gameState):
+	def handle_loop(self, game_state):
 		pass
 
 
