@@ -1,3 +1,4 @@
+from model import *
 
 
 class Game(object):
@@ -6,6 +7,9 @@ class Game(object):
 		self.width            = width
 		self.height           = height
 		self.state_resolution = state_resolution
+
+		self.transition_model = TransitionModel()
+		self.reward_model     = RewardModel()
 
 		self.agents    = [[],[]]
 		self.listeners = []
@@ -32,11 +36,13 @@ class Game(object):
 	def run_agent(self, agent):
 		pass
 
-	def apply_action(self, state, action):
-		pass
-
 
 class GameListener(object):
 
 	def handle_loop(self, gameState):
 		pass
+
+
+
+
+

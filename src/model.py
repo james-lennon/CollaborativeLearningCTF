@@ -26,8 +26,36 @@ class State(object):
 		self.pos = (0,0)
 		self.jail = False
 
+
 class GameState(object):
 	def __init__(self):
 		self.team1_states = []
 		self.team2_states = []
 		self.game_score = 0
+
+
+class TransitionModel(object):
+	
+	def __init__(self):
+		pass
+
+	def apply_action(self, state, action):
+		return state
+
+	def move_state(self, state, new_pos):
+		pass
+		
+
+class RewardModel(object):
+	
+	def __init__(self):
+		pass
+
+	def get_reward(self, state, action, state):
+		return 0
+		
+
+
+
+
+
