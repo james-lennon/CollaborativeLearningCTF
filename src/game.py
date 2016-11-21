@@ -13,7 +13,7 @@ class Game(object):
 
 		self.agents    = [[],[]]
 		self.listeners = []
-		self.gameState = GameState()
+		self.game_state = GameState()
 
 	def add_agent(self, agent, team):
 
@@ -27,9 +27,16 @@ class Game(object):
 	def add_listener(self, listener):
 		self.listeners.append(listener)
 
+	def run_team(self, team):
+		self.game_state.states[team] =
+			map(lambda a: 
+				self.run_agent(self.agents[team][a], self.game_state.states[team][a]),
+				len(self.agents[team]))
+
 	def loop(self):
 		# update game state
-		
+		self.run_team(0)
+		self.run_team(1)
 
 		# notify listeners
 		map(lambda l: l.handle_loop(self.gameState), self.listeners)
