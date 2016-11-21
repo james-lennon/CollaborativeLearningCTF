@@ -1,5 +1,5 @@
 from enum import Enum
-import numpy as np
+import reward
 
 class Action(Enum):
 	stay       = (0,0)
@@ -51,7 +51,16 @@ class RewardModel(object):
 		pass
 
 	def get_reward(self, state, action, new_state):
-		return 0
+		
+		# punish for jail
+		if new_state.jail and not state.jail:
+			return config.JAIL_REWARD
+
+		# calculate reward for getting closer to flag
+		flag_reward = config.FLAG_REWARD_WEIGHT * 
+					(new_state.dist_opp_flag - state.dist_opp_flag)
+
+		return flag_reward
 		
 
 

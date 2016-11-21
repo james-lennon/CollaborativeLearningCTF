@@ -1,7 +1,6 @@
 from game import *
 from agent import *
 
-
 class DebugListener(GameListener):
 
 	def handle_loop(self, game_state):
@@ -10,6 +9,10 @@ class DebugListener(GameListener):
 		print "* team 1: {}".format(map(lambda s: s.pos, game_state.states[1]))
 		print
 
+def MoveRightAgent(Agent):
+
+	def get_action(self, state):
+		return Action.right
 
 game = Game()
 
