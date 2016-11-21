@@ -16,6 +16,8 @@ class State(object):
 
 	# def __init__(self, dist_team, dist_opps, have_flag, enemy_side, flag_taken, dist_flag, dist_opp_flag, jail):
 	def __init__(self):#, dist_team, dist_opps, have_flag, enemy_side, flag_taken, dist_flag, dist_opp_flag, jail):
+		self.global_positions = [[],[]]
+		self.team = None # either 0 or 1 for which team the State is on
 		self.dist_team = []
 		self.dist_opps = []
 		self.have_flag = False
@@ -39,6 +41,18 @@ class TransitionModel(object):
 		pass
 
 	def apply_action(self, state, action):
+		original_pos = state.pos
+		state.pos[0] = state.pos[0] + action.value[0]
+		state.pos[1] = state.pos[1] + action.value[1]
+		if state.pos is a jail state: 
+			state.jail = True 
+		for dist in state.dist_team:
+			team_pos[0] = original_pos[0]+dist[0]
+			team_pos[1] = original_pos[1]+dist[1]
+			dist[0] = team_pos[0] - state.pos[0] 
+			dist[1] = team_pos[1] - state.pos[1]
+
+
 		return state
 
 	def move_state(self, state, new_pos):
