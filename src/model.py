@@ -14,5 +14,20 @@ class Action(Enum):
 
 class State(object):
 
+	# def __init__(self, dist_team, dist_opps, have_flag, enemy_side, flag_taken, dist_flag, dist_opp_flag, jail):
+	def __init__(self):#, dist_team, dist_opps, have_flag, enemy_side, flag_taken, dist_flag, dist_opp_flag, jail):
+		self.dist_team = []
+		self.dist_opps = []
+		self.have_flag = False
+		self.enemy_side = False
+		self.flag_taken = False
+		self.dist_flag = (0,0) 
+		self.dist_opp_flag = (0,0)
+		self.pos = (0,0)
+		self.jail = False
+
+class GameState(object):
 	def __init__(self):
-		pass
+		self.team1_states = []
+		self.team2_states = []
+		self.game_score = 0
