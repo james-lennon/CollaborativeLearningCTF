@@ -28,13 +28,20 @@ class Game(object):
 		self.listeners.append(listener)
 
 	def loop(self):
-		# TODO: update game state
+		# update game state
+		
 
 		# notify listeners
 		map(lambda l: l.handle_loop(self.gameState), self.listeners)
 
-	def run_agent(self, agent):
-		pass
+	def run_agent(self, agent, state):
+		action    = agent.choose_action(state)
+		new_state = transition_model.apply_action(state, action)
+		reward    = reward_model.get_reward(state, action, new_state)
+
+		agent.observe_transition(state, action, reward, new_state)
+
+		return new_state
 
 
 class GameListener(object):

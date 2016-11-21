@@ -7,3 +7,8 @@ class Agent(object):
 
 	def choose_action(self, state):
 		return Action.STAY
+
+	def observe_transition(self, state, action, reward, new_state):
+		pass
+
+
