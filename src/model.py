@@ -29,8 +29,7 @@ class State(object):
 
 class GameState(object):
 	def __init__(self):
-		self.team1_states = []
-		self.team2_states = []
+		self.states = [[],[]]
 		self.game_score = 0
 
 
