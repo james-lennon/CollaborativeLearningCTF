@@ -1,6 +1,12 @@
 from model import *
 
 
+class GameListener(object):
+
+	def handle_loop(self, game_state):
+		pass
+
+
 class Game(object):
 
 	def __init__(self, width=100, height=100, state_resolution=100):
@@ -51,11 +57,6 @@ class Game(object):
 
 		return new_state
 
-
-class GameListener(object):
-
-	def handle_loop(self, game_state):
-		pass
 
 
 
