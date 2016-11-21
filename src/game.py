@@ -31,7 +31,7 @@ class Game(object):
 		self.game_state.states[team] = \
 			map(lambda a: 
 				self.run_agent(self.agents[team][a], self.game_state.states[team][a]),
-				len(self.agents[team]))
+				xrange(len(self.agents[team])))
 
 	def loop(self):
 		# update game state
