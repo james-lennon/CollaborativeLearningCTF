@@ -64,7 +64,7 @@ class RewardModel(object):
 	def __init__(self):
 		pass
 
-	def get_reward(self, state, action, state):
+	def get_reward(self, state, action, new_state):
 		return 0
 		
 
