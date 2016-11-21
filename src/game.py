@@ -3,7 +3,7 @@ from model import *
 
 class Game(object):
 
-	def __init__(self, width, height, state_resolution):
+	def __init__(self, width=100, height=100, state_resolution=100):
 		self.width            = width
 		self.height           = height
 		self.state_resolution = state_resolution
@@ -28,7 +28,7 @@ class Game(object):
 		self.listeners.append(listener)
 
 	def run_team(self, team):
-		self.game_state.states[team] =
+		self.game_state.states[team] = \
 			map(lambda a: 
 				self.run_agent(self.agents[team][a], self.game_state.states[team][a]),
 				len(self.agents[team]))
