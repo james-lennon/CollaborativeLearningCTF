@@ -30,9 +30,12 @@ class State(object):
 
 
 class GameState(object):
-	def __init__(self):
+	def __init__(self, width, height):
 		self.states = [[],[]]
-		self.game_score = 0
+		self.scores = []
+
+		self.width  = width
+		self.height = height
 
 
 class TransitionModel(object):
@@ -62,9 +65,10 @@ class TransitionModel(object):
 			state.pos  = (0,0)
 
 		if not state.jail:
-			state.pos = util.normalized_move(state.pos, action, config.PLAYER_SPEED)
+			new_pos   = util.normalized_move(state.pos, action, config.PLAYER_SPEED)
+			state.pos = util.make_in_range(new_pos, game_state.width, game_state.height)
 
-		other_team = state.team ^ 1 # use XOR operator to toggle team
+		other_team     = state.team ^ 1 # use XOR operator to toggle team
 		team_distances = map(lambda x: util.distance(state.pos, x.pos), game_state.states[state.team])
 		opp_distances  = map(lambda x: util.distance(state.pos, x.pos), game_state.states[other_team])
 

@@ -10,3 +10,7 @@ def normalized_move(a, delta, speed):
 		return a
 
 	return (a[0] + delta[0]*speed/magnitude, a[1] + delta[1]*speed/magnitude)
+
+def make_in_range(pos, width, height):
+	return (max(min(pos[0], width), 0),
+		    max(min(pos[1], height), 0))

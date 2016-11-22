@@ -19,7 +19,7 @@ class Game(object):
 
 		self.agents    = [[],[]]
 		self.listeners = []
-		self.game_state = GameState()
+		self.game_state = GameState(width, height)
 
 	def add_agent(self, agent, pos, team):
 
