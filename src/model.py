@@ -62,7 +62,7 @@ class TransitionModel(object):
 			state.pos  = (0,0)
 
 		if not state.jail:
-			state.pos = util.normalized_move(state.pos, action)
+			state.pos = util.normalized_move(state.pos, action, config.PLAYER_SPEED)
 
 		other_team = state.team ^ 1 # use XOR operator to toggle team
 		team_distances = map(lambda x: util.distance(state.pos, x.pos), game_state.states[state.team])

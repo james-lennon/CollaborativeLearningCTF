@@ -1,5 +1,6 @@
 from game import *
 from agent import *
+import time
 
 class DebugListener(GameListener):
 
@@ -13,6 +14,9 @@ class MoveRightAgent(Agent):
 
 	def choose_action(self, state):
 		return Action.right
+
+	def observe_transition(self, state, action, reward, new_state):
+		print reward
 
 game = Game()
 
@@ -30,4 +34,5 @@ game.add_listener(DebugListener())
 iterations = 100
 for _ in xrange(iterations):
 	game.loop()
+	time.sleep(.05)
 
