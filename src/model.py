@@ -50,6 +50,18 @@ class State(object):
 				+ [int(self.flag_taken)]          \
 				+ [int(self.enemy_side)]
 
+	def q_features(self, action):
+		new_pos   = util.normalized_move(self.pos, action, config.PLAYER_SPEED)
+		pos_delta = lambda p: util.distance(new_pos, p) - util.distance(self.pos, p)
+
+		return map(pos_delta, self.dist_team)    \
+			 + map(pos_delta, self.dist_opps)    \
+			 + [pos_delta(self.dist_flag)]       \
+			 + [normalize(self.dist_opp_flag)]   \
+			 + [int(self.has_flag)]              \
+			 + [int(self.flag_taken)]            \
+			 + [int(self.enemy_side)]
+
 
 class GameState(object):
 	def __init__(self, width, height, game):
