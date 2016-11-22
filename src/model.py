@@ -23,8 +23,8 @@ class State(object):
 		self.has_flag = False
 		self.enemy_side = False
 		self.flag_taken = False
-		self.dist_flag = (0,0) 
-		self.dist_opp_flag = (0,0)
+		self.dist_flag = 0
+		self.dist_opp_flag = 0
 		self.pos = (0,0)
 		self.jail = False
 

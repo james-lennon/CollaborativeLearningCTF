@@ -9,7 +9,7 @@ class DebugListener(GameListener):
 		print "* team 1: {}".format(map(lambda s: s.pos, game_state.states[1]))
 		print
 
-def MoveRightAgent(Agent):
+class MoveRightAgent(Agent):
 
 	def get_action(self, state):
 		return Action.right
@@ -17,7 +17,7 @@ def MoveRightAgent(Agent):
 game = Game()
 
 agent1 = Agent()
-agent2 = Agent()
+agent2 = MoveRightAgent()
 
 # add agents
 game.add_agent(agent1, (0,0), 0)
