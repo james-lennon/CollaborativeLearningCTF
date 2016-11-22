@@ -76,9 +76,10 @@ class SimpleLearningAgent(Agent):
 		print "delta: {}".format(delta)
 		print "flag distance feature: {}".format(state_vector[2])
 		print "flag distance feature weight: {}".format(self.weights[2])
+		print "player distance feature weight: {}".format(self.weights[0])
 		# print state_vector
 
-		self.alpha *= .9
+		self.alpha *= .999
 
 
 
