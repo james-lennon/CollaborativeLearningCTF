@@ -21,7 +21,7 @@ class Game(object):
 		self.listeners = []
 		self.game_state = GameState()
 
-	def add_agent(self, agent, state, team):
+	def add_agent(self, agent, pos, team):
 
 		# check valid team
 		if team not in (0,1):
@@ -29,6 +29,10 @@ class Game(object):
 			return
 
 		self.agents[team].append(agent)
+
+		state      = State()
+		state.pos  = pos
+		state.team = team
 		self.game_state.states[team].append(state)
 
 	def add_listener(self, listener):
@@ -50,7 +54,7 @@ class Game(object):
 
 	def run_agent(self, agent, state):
 		action    = agent.choose_action(state)
-		new_state = self.transition_model.apply_action(state, action)
+		new_state = self.transition_model.apply_action(state, action, self.game_state)
 		reward    = self.reward_model.get_reward(state, action, new_state)
 
 		agent.observe_transition(state, action, reward, new_state)

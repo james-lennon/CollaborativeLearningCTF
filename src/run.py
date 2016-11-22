@@ -20,8 +20,8 @@ agent1 = Agent()
 agent2 = Agent()
 
 # add agents
-game.add_agent(agent1, State(), 0)
-game.add_agent(agent2, State(), 1)
+game.add_agent(agent1, (0,0), 0)
+game.add_agent(agent2, (0,100), 1)
 
 # add listener
 game.add_listener(DebugListener())

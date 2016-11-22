@@ -1,5 +1,6 @@
 from enum import Enum
 import config
+import util
 import copy
 
 class Action(Enum):
@@ -60,23 +61,20 @@ class TransitionModel(object):
 			# TODO: make spawn point
 			state.pos  = (0,0)
 
+		if not state.jail:
+			state.pos = util.normalized_move(state.pos, action)
+
+		other_team = state.team ^ 1 # use XOR operator to toggle team
+		team_distances = map(lambda x: util.distance(state.pos, x.pos), game_state.states[state.team])
+		opp_distances  = map(lambda x: util.distance(state.pos, x.pos), game_state.states[other_team])
+
+		# sort distances, remove first distance from dist_team because its the state's own agent
+		state.dist_team = sorted(team_distances)[1:]
+		state.dist_opps = sorted(opp_distances)
+
 		if self.is_tagged(state): 
 			state.jail = True
 			state.pos  = jail_pos
-
-		if not state.jail:
-			state.pos[0] = state.pos[0] + action.value[0]
-			state.pos[1] = state.pos[1] + action.value[1]
-
-		other_team = state.team ^ 1 # use XOR operator to toggle team
-		distances  = map(lambda x: , game_state.states[other_team])
-
-		for dist in state.dist_team:
-			team_pos[0] = original_pos[0]+dist[0]
-			team_pos[1] = original_pos[1]+dist[1]
-			dist[0] = team_pos[0] - state.pos[0] 
-			dist[1] = team_pos[1] - state.pos[1]
-
 
 		return state
 
