@@ -2,6 +2,7 @@ from enum import Enum
 import config
 import util
 import copy
+import math
 
 class Action(Enum):
 	stay       = (0,0)
@@ -22,7 +23,7 @@ class Action(Enum):
 
 class State(object):
 
-	def __init__(self):#, dist_team, dist_opps, have_flag, enemy_side, flag_taken, dist_flag, dist_opp_flag, jail):
+	def __init__(self, game):#, dist_team, dist_opps, have_flag, enemy_side, flag_taken, dist_flag, dist_opp_flag, jail):
 		self.team = None # either 0 or 1 for which team the State is on
 		self.dist_team = []
 		self.dist_opps = []
@@ -34,13 +35,19 @@ class State(object):
 		self.pos = (0,0)
 		self.jail = False
 
+		self.game = game
+
 	def list_representation(self):
-		return    self.dist_team         \
-		        + self.dist_opps         \
-		        + [self.dist_flag]       \
-				+ [self.dist_opp_flag]   \
-				+ [int(self.has_flag)]   \
-				+ [int(self.flag_taken)] \
+
+		max_dist  = math.sqrt(self.game.width**2 + self.game.height**2)
+		normalize = lambda d: d / max_dist
+
+		return    map(normalize, self.dist_team)  \
+		        + map(normalize, self.dist_opps)  \
+		        + [normalize(self.dist_flag)]     \
+				+ [normalize(self.dist_opp_flag)] \
+				+ [int(self.has_flag)]            \
+				+ [int(self.flag_taken)]          \
 				+ [int(self.enemy_side)]
 
 

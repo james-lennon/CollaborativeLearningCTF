@@ -30,7 +30,7 @@ class Game(object):
 
 		self.agents[team].append(agent)
 
-		state      = State()
+		state      = State(self)
 		state.pos  = pos
 		state.team = team
 		self.game_state.states[team].append(state)
