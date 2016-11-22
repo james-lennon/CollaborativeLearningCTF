@@ -14,6 +14,12 @@ class Action(Enum):
 	left       = (-1,0)
 	up_left    = (-1,1)
 
+	@staticmethod
+	def all_actions():
+		return [Action.stay, Action.up, Action.up_right, Action.right, 
+				Action.down_right, Action.down, Action.down_left, 
+				Action.left, Action.up_left]
+
 class State(object):
 
 	def __init__(self):#, dist_team, dist_opps, have_flag, enemy_side, flag_taken, dist_flag, dist_opp_flag, jail):
@@ -28,19 +34,39 @@ class State(object):
 		self.pos = (0,0)
 		self.jail = False
 
+	def list_representation(self):
+		return    self.dist_team         \
+		        + self.dist_opps         \
+		        + [self.dist_flag]       \
+				+ [self.dist_opp_flag]   \
+				+ [int(self.has_flag)]   \
+				+ [int(self.flag_taken)] \
+				+ [int(self.enemy_side)]
+
 
 class GameState(object):
-	def __init__(self, width, height):
+	def __init__(self, width, height, game):
 		self.states = [[],[]]
 		self.scores = []
 
 		self.width  = width
 		self.height = height
+		self.game   = game
 
 		self.flag_positions = [
 				(width/2.0, 10),
 				(width/2.0, height-10)
 			]
+
+	def get_adjacent(self, state):
+
+		# dictionary of action -> state
+		result = {}
+
+		for a in Action.all_actions():
+			result[a] = self.game.transition_model.apply_action(state, a, self)
+
+		return result
 
 
 class TransitionModel(object):

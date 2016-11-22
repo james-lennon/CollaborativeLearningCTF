@@ -14,7 +14,7 @@ class DebugListener(GameListener):
 game = Game()
 
 agent1 = RandomAgent()
-agent2 = MoveRightAgent()
+agent2 = SimpleLearningAgent()
 
 # add agents
 game.add_agent(agent1, (0,0), 0)
