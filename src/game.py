@@ -45,6 +45,13 @@ class Game(object):
 				self.run_agent(self.agents[team][a], self.game_state.states[team][a]),
 				xrange(len(self.agents[team])))
 
+	def start(self):
+		for j in (0,1):
+			for i in xrange(len(self.game_state.states[j])):
+				old_state = self.game_state.states[j][i]
+				self.game_state.states[j][i] = \
+					self.transition_model.apply_action(old_state, Action.stay, self.game_state) 
+
 	def loop(self):
 		# update game state
 		self.run_team(0)

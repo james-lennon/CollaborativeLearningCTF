@@ -20,21 +20,49 @@ class RandomAgent(Agent):
 
 class SimpleLearningAgent(Agent):
 
-	def __init__(self):
+	def __init__(self, alpha = .5):
 		Agent.__init__(self)
 
 		self.weights = None
+		self.alpha   = alpha
+
+	def init_weights(self, n):
+		self.weights = [0 for _ in xrange(n)]
+
+	def value_of_state(self, state_vector):
+		return sum(map(lambda i: state_vector[i]*self.weights[i], xrange(len(state_vector))))
 
 	def choose_action(self, state, game_state):
+
+		state_vector = state.list_representation()
+
+		if not self.weights:
+			self.init_weights(len(state_vector))
 
 		adj = game_state.get_adjacent(state)
 
 		best_action = None
 		best_score  = None
 
-		print state.list_representation()
+		# print state.list_representation()
 
-		return Action.stay
+		return random.choice(Action.all_actions())
 
 	def observe_transition(self, state, action, reward, new_state):
-		print reward
+
+		state_vector     = state.list_representation()
+		new_state_vector = new_state.list_representation()
+
+		delta = self.value_of_state(new_state_vector) + reward - self.value_of_state(state_vector)
+
+		update = lambda (w, f): w + self.alpha*delta*f
+
+		self.weights = map(update, zip(self.weights, state_vector))
+
+		print self.weights
+
+
+
+
+
+

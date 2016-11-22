@@ -25,6 +25,9 @@ game.add_listener(DebugListener())
 
 # simulate game
 iterations = 100
+
+game.start()
+
 for _ in xrange(iterations):
 	game.loop()
 	time.sleep(.05)
