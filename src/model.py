@@ -54,12 +54,14 @@ class State(object):
 		new_pos   = util.normalized_move(self.pos, action, config.PLAYER_SPEED)
 		pos_delta = lambda p: util.distance(new_pos, p) - util.distance(self.pos, p)
 
-		return map(pos_delta, self.dist_team)    \
-			 + map(pos_delta, self.dist_opps)    \
-			 + [pos_delta(self.dist_flag)]       \
-			 + [normalize(self.dist_opp_flag)]   \
-			 + [int(self.has_flag)]              \
-			 + [int(self.flag_taken)]            \
+		other_team = self.team ^ 1
+
+		return map(pos_delta, map(lambda x: x.pos, self.game.game_state.states[self.team])) \
+			 + map(pos_delta, map(lambda x: x.pos, self.game.game_state.states[other_team])) \
+			 + [pos_delta(self.game.game_state.flag_positions[self.team])] \
+			 + [pos_delta(self.game.game_state.flag_positions[other_team])] \
+			 + [int(self.has_flag)] \
+			 + [int(self.flag_taken)] \
 			 + [int(self.enemy_side)]
 
 
@@ -155,7 +157,7 @@ class RewardModel(object):
 
 		# calculate reward for getting closer to flag
 		flag_reward = config.FLAG_REWARD_WEIGHT * \
-					(new_state.dist_opp_flag - state.dist_opp_flag)
+					(state.dist_opp_flag - new_state.dist_opp_flag)
 
 		return flag_reward
 		
