@@ -1,5 +1,6 @@
 from game import *
 from agent import *
+from testAgents import *
 import time
 
 class DebugListener(GameListener):
@@ -10,17 +11,9 @@ class DebugListener(GameListener):
 		print "* team 1: {}".format(map(lambda s: s.pos, game_state.states[1]))
 		print
 
-class MoveRightAgent(Agent):
-
-	def choose_action(self, state):
-		return Action.right
-
-	def observe_transition(self, state, action, reward, new_state):
-		print reward
-
 game = Game()
 
-agent1 = Agent()
+agent1 = RandomAgent()
 agent2 = MoveRightAgent()
 
 # add agents
