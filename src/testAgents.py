@@ -20,11 +20,12 @@ class RandomAgent(Agent):
 
 class SimpleLearningAgent(Agent):
 
-	def __init__(self, alpha = .5):
+	def __init__(self, alpha = .5, epsilon = .1):
 		Agent.__init__(self)
 
 		self.weights = None
 		self.alpha   = alpha
+		self.epsilon = .5
 
 	def init_weights(self, n):
 		self.weights = [0 for _ in xrange(n)]
@@ -44,9 +45,17 @@ class SimpleLearningAgent(Agent):
 		best_action = None
 		best_score  = None
 
-		# print state.list_representation()
+		for a in adj:
+			score = self.value_of_state(adj[a].list_representation())
+			if best_score is None or score > best_score:
+				best_score = score
+				best_action = a
 
-		return random.choice(Action.all_actions())
+		if random.random() < self.epsilon:
+			return random.choice(Action.all_actions())
+
+		self.epsilon *= .95
+		return best_action
 
 	def observe_transition(self, state, action, reward, new_state):
 
@@ -60,6 +69,7 @@ class SimpleLearningAgent(Agent):
 		self.weights = map(update, zip(self.weights, state_vector))
 
 		print self.weights
+		print state_vector
 
 
 

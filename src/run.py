@@ -24,7 +24,7 @@ game.add_agent(agent2, (0,100), 1)
 game.add_listener(DebugListener())
 
 # simulate game
-iterations = 100
+iterations = 10000
 
 game.start()
 
