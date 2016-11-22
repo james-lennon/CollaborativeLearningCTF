@@ -37,6 +37,11 @@ class GameState(object):
 		self.width  = width
 		self.height = height
 
+		self.flag_positions = [
+				(width/2.0, 10),
+				(width/2.0, height-10)
+			]
+
 
 class TransitionModel(object):
 	
@@ -57,13 +62,16 @@ class TransitionModel(object):
 
 	def apply_action(self, old_state, action, game_state):
 
+		# make duplicate so we don't modify state
 		state = copy.copy(old_state)
 
+		# if in jail, move out of jail (for now)
 		if state.jail:
 			state.jail = False
 			# TODO: make spawn point
 			state.pos  = (0,0)
 
+		# move if not in jail
 		if not state.jail:
 			new_pos   = util.normalized_move(state.pos, action, config.PLAYER_SPEED)
 			state.pos = util.make_in_range(new_pos, game_state.width, game_state.height)
@@ -76,7 +84,10 @@ class TransitionModel(object):
 		state.dist_team = sorted(team_distances)[1:]
 		state.dist_opps = sorted(opp_distances)
 
-		if self.is_tagged(state): 
+		state.dist_flag     = util.distance(state.pos, game_state.flag_positions[state.team])
+		state.dist_opp_flag = util.distance(state.pos, game_state.flag_positions[other_team])
+
+		if self.is_tagged(state):
 			state.jail = True
 			state.pos  = jail_pos
 
