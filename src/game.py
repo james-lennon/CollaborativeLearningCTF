@@ -39,6 +39,7 @@ class Game(object):
 		self.listeners.append(listener)
 
 	def run_team(self, team):
+
 		self.game_state.states[team] = \
 			map(lambda a: 
 				self.run_agent(self.agents[team][a], self.game_state.states[team][a]),

@@ -11,7 +11,7 @@ class DebugListener(GameListener):
 
 class MoveRightAgent(Agent):
 
-	def get_action(self, state):
+	def choose_action(self, state):
 		return Action.right
 
 game = Game()
