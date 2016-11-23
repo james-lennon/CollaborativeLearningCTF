@@ -20,7 +20,7 @@ class RandomAgent(Agent):
 		# print reward
 		pass
 
-class SimpleLearningAgent(Agent):
+class QLearningAgent(Agent):
 
 	def __init__(self, alpha = .5, epsilon = .1):
 		Agent.__init__(self)
