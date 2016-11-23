@@ -12,14 +12,14 @@ class DebugListener(GameListener):
 		print "* team 1: {}".format(map(lambda s: s.pos, game_state.states[1]))
 		print
 
-game = Game(50, 50)
+game = Game(50, 30)
 
 agent1 = RandomAgent()
 agent2 = SimpleLearningAgent()
 
 # add agents
 game.add_agent(agent1, (0,0), 0)
-game.add_agent(agent2, (0,50), 1)
+game.add_agent(agent2, (0,30), 1)
 
 # add listener
 # game.add_listener(DebugListener())
@@ -32,6 +32,6 @@ game.start()
 
 for _ in xrange(iterations):
 	game.loop()
-	# time.sleep(.05)
+	time.sleep(.05)
 
 agent2.save_weights("weights.txt")
