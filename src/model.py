@@ -63,10 +63,15 @@ class State(object):
 			if s.num != self.num:
 				team_pos.append(s.pos)
 
+		if self.has_flag:
+			opp_flag_pos = self.game.game_state.flag_spawn_positions[self.team]
+		else:
+			opp_flag_pos = self.game.game_state.flag_positions[other_team]
+
 		return map(pos_delta, team_pos) \
 			 + map(pos_delta, map(lambda x: x.pos, self.game.game_state.states[other_team])) \
 			 + [pos_delta(self.game.game_state.flag_positions[self.team])] \
-			 + [pos_delta(self.game.game_state.flag_positions[other_team])] \
+			 + [pos_delta(opp_flag_pos)] \
 			 + [int(self.has_flag)] \
 			 + [int(self.flag_taken)] \
 			 + [int(self.enemy_side)]
@@ -81,10 +86,11 @@ class GameState(object):
 		self.height = height
 		self.game   = game
 
-		self.flag_positions = [
+		self.flag_spawn_positions = [
 				(width/2.0, 10),
 				(width/2.0, height-10)
 			]
+		self.flag_positions = copy.copy(self.flag_spawn_positions)
 
 	def get_adjacent(self, state):
 
@@ -141,9 +147,13 @@ class TransitionModel(object):
 		state.dist_flag     = util.distance(state.pos, game_state.flag_positions[state.team])
 		state.dist_opp_flag = util.distance(state.pos, game_state.flag_positions[other_team])
 
+		if state.dist_opp_flag < config.PLAYER_RADIUS:
+			state.has_flag = True
+
 		if self.is_tagged(state):
-			state.jail = True
-			state.pos  = jail_pos
+			state.jail     = True
+			state.pos      = self.jail_pos
+			state.has_flag = False
 
 		return state
 
