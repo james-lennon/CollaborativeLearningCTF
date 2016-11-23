@@ -22,7 +22,7 @@ game.add_agent(agent1, (0,0), 0)
 game.add_agent(agent2, (0,50), 1)
 
 # add listener
-game.add_listener(DebugListener())
+# game.add_listener(DebugListener())
 game.add_listener(TerminalListener())
 
 # simulate game

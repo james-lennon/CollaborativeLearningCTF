@@ -72,13 +72,12 @@ class SimpleLearningAgent(Agent):
 
 		self.weights = map(update, zip(self.weights, state_vector))
 
-		print "pos: {}, action: {}, reward: {}".format(state.pos, action, reward)
-		print "score: {}, new score: {}".format(self.value_of_state(state_vector), best_new_score)
-		print "delta: {}".format(delta)
-		print "flag distance feature: {}".format(state_vector[2])
-		print "flag distance feature weight: {}".format(self.weights[2])
-		print "player distance feature weight: {}".format(self.weights[0])
-		# print state_vector
+		# print "pos: {}, action: {}, reward: {}".format(state.pos, action, reward)
+		# print "score: {}, new score: {}".format(self.value_of_state(state_vector), best_new_score)
+		# print "delta: {}".format(delta)
+		# print "flag distance feature: {}".format(state_vector[2])
+		# print "flag distance feature weight: {}".format(self.weights[2])
+		# print "player distance feature weight: {}".format(self.weights[0])
 
 		self.alpha *= .999
 		# self.epsilon *= .999
