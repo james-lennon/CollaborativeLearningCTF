@@ -35,6 +35,7 @@ class State(object):
 		self.dist_opp_flag = 0
 		self.pos = (0,0)
 		self.jail = False
+		self.tagging = False
 
 		self.game = game
 		self.num  = num
@@ -108,14 +109,21 @@ class TransitionModel(object):
 	def __init__(self):
 		self.jail_pos = (-1,-1)
 
-	def is_tagged(self, state):
-		
-		# check if you can be tagged
-		if not state.enemy_side and not state.has_flag:
-			return False
+	def handle_tagging(self, state):
 
 		# return if we're touching an enemy
-		return any(map(lambda x: x <= config.PLAYER_RADIUS, state.dist_opps))
+		touching = any(map(lambda x: x <= config.PLAYER_RADIUS, state.dist_opps))
+
+		if not touching: return
+
+		state.tagging = False
+		if state.enemy_side or state.has_flag:
+			state.jail     = True
+			state.pos      = self.jail_pos
+			state.has_flag = False
+		elif not state.enemy_side:
+			state.tagging = True
+
 
 	def is_in_jail(self, state):
 		return state.pos == self.jail_pos
@@ -131,11 +139,19 @@ class TransitionModel(object):
 			# TODO: make spawn point
 			state.pos  = (0,0)
 
-		# move if not in jail
+		# move to new position if not in jail
 		if not state.jail:
 			new_pos   = util.normalized_move(state.pos, action, config.PLAYER_SPEED)
 			state.pos = util.make_in_range(new_pos, game_state.width, game_state.height)
 
+		# update enemy side
+		halfway = game_state.height / 2
+		if state.pos[1] > halfway and state.team == 0:
+			state.enemy_side = True
+		else:
+			state.enemy_side = False
+
+		# get team and opponent distances
 		other_team     = state.team ^ 1 # use XOR operator to toggle team
 		team_distances = map(lambda x: util.distance(state.pos, x.pos), game_state.states[state.team])
 		opp_distances  = map(lambda x: util.distance(state.pos, x.pos), game_state.states[other_team])
@@ -145,7 +161,12 @@ class TransitionModel(object):
 		state.dist_opps = sorted(opp_distances)
 
 		state.dist_flag     = util.distance(state.pos, game_state.flag_positions[state.team])
-		state.dist_opp_flag = util.distance(state.pos, game_state.flag_positions[other_team])
+		
+		if state.has_flag:
+			opp_flag_pos = game_state.flag_spawn_positions[state.team]
+		else:
+			opp_flag_pos = game_state.flag_positions[other_team]
+		state.dist_opp_flag = util.distance(state.pos, opp_flag_pos)
 
 		if state.dist_opp_flag < config.PLAYER_RADIUS:
 			state.has_flag = True
@@ -153,10 +174,7 @@ class TransitionModel(object):
 		if state.has_flag and state.dist_flag < config.PLAYER_RADIUS:
 			state.has_flag = False
 
-		if self.is_tagged(state):
-			state.jail     = True
-			state.pos      = self.jail_pos
-			state.has_flag = False
+		self.handle_tagging(state)
 
 		return state
 
@@ -181,10 +199,21 @@ class RewardModel(object):
 		reward += config.FLAG_REWARD_WEIGHT * \
 					(state.dist_opp_flag - new_state.dist_opp_flag)
 
-
-		flag_distance = util.distance(state.pos, game_state.flag_positions[state.team^1])
-		if flag_distance <= config.PLAYER_RADIUS:
+		# reward for taking flag
+		if new_state.has_flag and not state.has_flag:
 			reward += config.CAPTURE_FLAG_REWARD
+
+		# reward for moving closer to flag
+		if not state.has_flag:
+			reward += config.FLAG_REWARD_WEIGHT * \
+					(state.dist_opp_flag - new_state.dist_opp_flag)
+
+		# if not state.has_flag:
+		# 	flag_distance = util.distance(state.pos, game_state.flag_positions[state.team^1])
+		# 	if flag_distance <= config.PLAYER_RADIUS:
+		# 		reward += config.CAPTURE_FLAG_REWARD
+		# else:
+		# 	goal_distance = util.distance(state.pos, game_state.flag_spawn_positions[state.team])		
 
 		return reward
 		

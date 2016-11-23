@@ -14,12 +14,12 @@ class DebugListener(GameListener):
 
 game = Game(50, 30)
 
-agent1 = RandomAgent()
+agent1 = Agent()
 agent2 = SimpleLearningAgent()
 
 # add agents
-game.add_agent(agent1, (0,0), 0)
-game.add_agent(agent2, (0,30), 1)
+# game.add_agent(agent1, (25,15), 0)
+game.add_agent(agent2, (0,0), 1)
 
 # add listener
 # game.add_listener(DebugListener())
