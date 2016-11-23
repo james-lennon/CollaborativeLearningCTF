@@ -18,5 +18,11 @@ class TerminalListener(GameListener):
 					if util.distance(s.pos, (x,y)) <= 1:
 						print "2",
 						has_agent = True
+				if util.distance(game_state.flag_positions[0], (x,y)) <= 1:
+					print "A",
+					has_agent = True
+				if util.distance(game_state.flag_positions[1], (x,y)) <= 1:
+					print "B",
+					has_agent = True
 				if not has_agent: print ".",
 			print

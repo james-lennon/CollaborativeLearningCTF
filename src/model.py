@@ -87,8 +87,8 @@ class GameState(object):
 		self.game   = game
 
 		self.flag_spawn_positions = [
-				(width/2.0, 10),
-				(width/2.0, height-10)
+				(width/2.0, height/10.),
+				(width/2.0, height*9./10.)
 			]
 		self.flag_positions = copy.copy(self.flag_spawn_positions)
 
@@ -149,6 +149,9 @@ class TransitionModel(object):
 
 		if state.dist_opp_flag < config.PLAYER_RADIUS:
 			state.has_flag = True
+
+		if state.has_flag and state.dist_flag < config.PLAYER_RADIUS:
+			state.has_flag = False
 
 		if self.is_tagged(state):
 			state.jail     = True
