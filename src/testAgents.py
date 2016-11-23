@@ -1,6 +1,7 @@
 from agent import Agent
 from model import Action
 import random
+import json
 
 class MoveRightAgent(Agent):
 
@@ -37,7 +38,7 @@ class SimpleLearningAgent(Agent):
 
 	def choose_action(self, state, game_state):
 
-		# check if we haven't initialized weights yet
+		# check if we haven't initiazed weights yet
 		if not self.weights:
 			self.init_weights(len(state.q_features(Action.stay)))
 
@@ -81,6 +82,11 @@ class SimpleLearningAgent(Agent):
 
 		self.alpha *= .999
 		# self.epsilon *= .999
+
+	def save_weights(self, filename):
+
+		with open(filename, "w") as writefile:
+			writefile.write(json.dumps(self.weights))
 
 
 

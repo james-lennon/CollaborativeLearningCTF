@@ -17,7 +17,7 @@ agent1 = RandomAgent()
 agent2 = SimpleLearningAgent()
 
 # add agents
-# game.add_agent(agent1, (0,0), 0)
+game.add_agent(agent1, (0,0), 0)
 game.add_agent(agent2, (0,100), 1)
 
 # add listener
@@ -30,5 +30,6 @@ game.start()
 
 for _ in xrange(iterations):
 	game.loop()
-	time.sleep(.05)
+	# time.sleep(.05)
 
+agent2.save_weights("weights.txt")

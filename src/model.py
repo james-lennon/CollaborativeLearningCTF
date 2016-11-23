@@ -24,7 +24,7 @@ class Action(Enum):
 
 class State(object):
 
-	def __init__(self, game):#, dist_team, dist_opps, have_flag, enemy_side, flag_taken, dist_flag, dist_opp_flag, jail):
+	def __init__(self, game, num):#, dist_team, dist_opps, have_flag, enemy_side, flag_taken, dist_flag, dist_opp_flag, jail):
 		self.team = None # either 0 or 1 for which team the State is on
 		self.dist_team = []
 		self.dist_opps = []
@@ -37,6 +37,7 @@ class State(object):
 		self.jail = False
 
 		self.game = game
+		self.num  = num
 
 	def list_representation(self):
 
@@ -57,7 +58,12 @@ class State(object):
 
 		other_team = self.team ^ 1
 
-		return map(pos_delta, map(lambda x: x.pos, self.game.game_state.states[self.team])) \
+		team_pos = []
+		for s in self.game.game_state.states[self.team]:
+			if s.num != self.num:
+				team_pos.append(s.pos)
+
+		return map(pos_delta, team_pos) \
 			 + map(pos_delta, map(lambda x: x.pos, self.game.game_state.states[other_team])) \
 			 + [pos_delta(self.game.game_state.flag_positions[self.team])] \
 			 + [pos_delta(self.game.game_state.flag_positions[other_team])] \
