@@ -1,6 +1,7 @@
 from game import *
 from agent import *
 from testAgents import *
+from terminalListener import *
 import time
 
 class DebugListener(GameListener):
@@ -11,17 +12,18 @@ class DebugListener(GameListener):
 		print "* team 1: {}".format(map(lambda s: s.pos, game_state.states[1]))
 		print
 
-game = Game()
+game = Game(50, 50)
 
 agent1 = RandomAgent()
 agent2 = SimpleLearningAgent()
 
 # add agents
 game.add_agent(agent1, (0,0), 0)
-game.add_agent(agent2, (0,100), 1)
+game.add_agent(agent2, (0,50), 1)
 
 # add listener
 game.add_listener(DebugListener())
+game.add_listener(TerminalListener())
 
 # simulate game
 iterations = 10000
