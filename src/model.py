@@ -3,6 +3,7 @@ import config
 import util
 import copy
 import math
+import time
 
 class Action(Enum):
 	stay       = (0,0)
@@ -149,17 +150,24 @@ class RewardModel(object):
 	def __init__(self):
 		pass
 
-	def get_reward(self, state, action, new_state):
+	def get_reward(self, state, action, new_state, game_state):
 		
 		# punish for jail
 		if new_state.jail and not state.jail:
 			return config.JAIL_REWARD
 
+		reward = 0
+
 		# calculate reward for getting closer to flag
-		flag_reward = config.FLAG_REWARD_WEIGHT * \
+		reward += config.FLAG_REWARD_WEIGHT * \
 					(state.dist_opp_flag - new_state.dist_opp_flag)
 
-		return flag_reward
+
+		flag_distance = util.distance(state.pos, game_state.flag_positions[state.team^1])
+		if flag_distance <= config.PLAYER_RADIUS:
+			reward += config.CAPTURE_FLAG_REWARD
+
+		return reward
 		
 
 

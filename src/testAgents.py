@@ -80,6 +80,7 @@ class SimpleLearningAgent(Agent):
 		# print state_vector
 
 		self.alpha *= .999
+		# self.epsilon *= .999
 
 
 

@@ -63,7 +63,7 @@ class Game(object):
 	def run_agent(self, agent, state):
 		action    = agent.choose_action(state, self.game_state)
 		new_state = self.transition_model.apply_action(state, action, self.game_state)
-		reward    = self.reward_model.get_reward(state, action, new_state)
+		reward    = self.reward_model.get_reward(state, action, new_state, self.game_state)
 
 		agent.observe_transition(state, action, reward, new_state)
 
