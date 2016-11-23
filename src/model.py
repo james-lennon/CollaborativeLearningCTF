@@ -201,19 +201,13 @@ class RewardModel(object):
 
 		# reward for taking flag
 		if new_state.has_flag and not state.has_flag:
+			reward += config.TAKE_FLAG_REWARD
+		elif state.has_flag and not new_state.has_flag and not state.jail:
 			reward += config.CAPTURE_FLAG_REWARD
 
 		# reward for moving closer to flag
-		if not state.has_flag:
-			reward += config.FLAG_REWARD_WEIGHT * \
+		reward += config.FLAG_REWARD_WEIGHT * \
 					(state.dist_opp_flag - new_state.dist_opp_flag)
-
-		# if not state.has_flag:
-		# 	flag_distance = util.distance(state.pos, game_state.flag_positions[state.team^1])
-		# 	if flag_distance <= config.PLAYER_RADIUS:
-		# 		reward += config.CAPTURE_FLAG_REWARD
-		# else:
-		# 	goal_distance = util.distance(state.pos, game_state.flag_spawn_positions[state.team])		
 
 		return reward
 		
