@@ -3,6 +3,8 @@ from agent import *
 from testAgents import *
 from terminalListener import *
 import time
+import atexit
+import sys
 
 class DebugListener(GameListener):
 
@@ -12,40 +14,59 @@ class DebugListener(GameListener):
 		print "* team 1: {}".format(map(lambda s: s.pos, game_state.states[1]))
 		print
 
-game = Game(50, 30)
+def run_for_iterations(game, iterations):
 
-agent1a = RandomAgent()
-agent1b = RandomAgent()
-agent2a = QLearningAgent()
-agent2b = QLearningAgent()
+	for i in xrange(iterations):
+		game.loop()
+		if i % (iterations/100) == 0:
+			sys.stdout.write("\r{:d}%".format(100*i/iterations))
+			sys.stdout.flush()
 
-# add agents
-game.add_agent(agent1a, (25,15), 0)
-# game.add_agent(agent1b, (25,15), 0)
-# game.add_agent(agent2a, (0,0), 1)
-game.add_agent(agent2b, (25,0), 1)
+def single_agent_test():
+	game  = Game(50, 30)
+	agent = QLearningAgent()
 
-# add listener
-# game.add_listener(DebugListener())
+	# add agents
+	game.add_agent(agent, (25,15), 0)
 
-# simulate game
-iterations = 50000
+	# simulate game
+	iterations = 10000
 
-game.start()
-game.add_listener(TerminalListener())
+	atexit.register(lambda: agent.save_weights("single_agent_weights.txt"))
 
-for _ in xrange(iterations):
-	game.loop()
-	time.sleep(.05)
+	game.start()
 
-agent2a.epsilon = 0
-agent2b.epsilon = 0
+	# run_for_iterations(game, 50000)
 
-for _ in xrange(iterations):
-	game.loop()
-	time.sleep(.05)
+	game.add_listener(TerminalListener())
 
-agent2.save_weights("weights.txt")
+	# agent.alpha = 0
+	# agent.epsilon = 0
 
+	for _ in xrange(iterations):
+		game.loop()
+		time.sleep(.05)
 
+def obstacle_test():
+	game = Game(50, 30)
+
+	agent1 = Agent()
+	agent2 = QLearningAgent()
+
+	# add agents
+	game.add_agent(agent1, (25,15), 0)
+	game.add_agent(agent2, (25,0), 1)
+
+	# simulate game
+	iterations = 50000
+
+	game.start()
+	game.add_listener(TerminalListener())
+
+	for _ in xrange(iterations):
+		game.loop()
+		time.sleep(.05)
+
+# single_agent_test()
+obstacle_test()
 

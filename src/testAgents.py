@@ -22,13 +22,15 @@ class RandomAgent(Agent):
 
 class QLearningAgent(Agent):
 
-	def __init__(self, alpha = .5, epsilon = .1):
+	def __init__(self, alpha = .5, epsilon = .1, alpha_decay = .9):
 		Agent.__init__(self)
 
 		self.weights = None
 		self.alpha   = alpha
 		self.epsilon = .3
 		self.gamma   = .8
+
+		self.alpha_decay = alpha_decay
 
 	def init_weights(self, n):
 		self.weights = [0 for _ in xrange(n)]
@@ -79,8 +81,7 @@ class QLearningAgent(Agent):
 		# print "flag distance feature weight: {}".format(self.weights[2])
 		# print "player distance feature weight: {}".format(self.weights[0])
 
-		self.alpha *= .999
-		# self.epsilon *= .999
+		self.alpha *= self.alpha_decay
 
 	def save_weights(self, filename):
 
