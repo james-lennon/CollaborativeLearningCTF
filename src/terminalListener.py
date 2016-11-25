@@ -4,7 +4,7 @@ import util
 class TerminalListener(GameListener):
 
 	def handle_loop(self, game_state):
-		print "\n\n\n\n\n\n\n\n"
+		# print "\n\n\n\n\n\n\n\n"
 
 		for y in xrange(game_state.height):
 			for x in xrange(game_state.width):

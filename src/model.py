@@ -26,13 +26,14 @@ class State(object):
 
 	def __init__(self, game, num):#, dist_team, dist_opps, have_flag, enemy_side, flag_taken, dist_flag, dist_opp_flag, jail):
 		self.team = None # either 0 or 1 for which team the State is on
-		self.dist_team = []
-		self.dist_opps = []
+		self.team_positions = []
+		self.opp_positions = []
 		self.has_flag = False
 		self.enemy_side = False
 		self.flag_taken = False
 		self.dist_flag = 0
 		self.dist_opp_flag = 0
+		self.dist_base = 0
 		self.pos = (0,0)
 		self.jail = False
 		self.tagging = False
@@ -55,6 +56,7 @@ class State(object):
 
 	def q_features(self, action):
 		new_pos   = util.normalized_move(self.pos, action, config.PLAYER_SPEED)
+		new_pos   = util.make_in_range(new_pos, self.game.width, self.game.height)
 		pos_delta = lambda p: util.distance(new_pos, p) - util.distance(self.pos, p)
 
 		other_team = self.team ^ 1
@@ -64,18 +66,37 @@ class State(object):
 			if s.num != self.num:
 				team_pos.append(s.pos)
 
+		base_pos     = self.game.game_state.flag_spawn_positions[self.team]
+		opp_flag_pos = self.game.game_state.flag_positions[other_team]
+
 		if self.has_flag:
-			opp_flag_pos = self.game.game_state.flag_spawn_positions[self.team]
+			opp_flag_delta = 0
+			target_delta   = pos_delta(base_pos)
 		else:
-			opp_flag_pos = self.game.game_state.flag_positions[other_team]
+			opp_flag_delta = pos_delta(opp_flag_pos)
+			target_delta   = 0
+
+		if not self.has_flag:
+			take_flag    = util.distance(new_pos, opp_flag_pos) <= config.PLAYER_RADIUS
+			capture_flag = False
+		else:
+			take_flag    = False
+			capture_flag = util.distance(new_pos, base_pos) <= config.PLAYER_RADIUS
+
+		if take_flag:
+			opp_flag_delta = 0
+		if capture_flag:
+			target_delta = 0
 
 		return map(pos_delta, team_pos) \
 			 + map(pos_delta, map(lambda x: x.pos, self.game.game_state.states[other_team])) \
-			 + [pos_delta(self.game.game_state.flag_positions[self.team])] \
-			 + [pos_delta(opp_flag_pos)] \
-			 + [int(self.has_flag)] \
-			 + [int(self.flag_taken)] \
-			 + [int(self.enemy_side)]
+			 + [opp_flag_delta] \
+			 + [target_delta] \
+			 + [int(take_flag)] \
+			 + [int(capture_flag)]
+			 # \
+			 # + [int(self.enemy_side)]
+			 # + [pos_delta(self.game.game_state.flag_positions[self.team])] \
 
 
 class GameState(object):
@@ -112,7 +133,8 @@ class TransitionModel(object):
 	def handle_tagging(self, state):
 
 		# return if we're touching an enemy
-		touching = any(map(lambda x: x <= config.PLAYER_RADIUS, state.dist_opps))
+		touching = any(map(lambda x: 
+			util.distance(state.pos, x) <= config.PLAYER_RADIUS, state.opp_positions))
 
 		if not touching: return
 
@@ -153,25 +175,29 @@ class TransitionModel(object):
 
 		# get team and opponent distances
 		other_team     = state.team ^ 1 # use XOR operator to toggle team
-		team_distances = map(lambda x: util.distance(state.pos, x.pos), game_state.states[state.team])
-		opp_distances  = map(lambda x: util.distance(state.pos, x.pos), game_state.states[other_team])
 
-		# sort distances, remove first distance from dist_team because its the state's own agent
-		state.dist_team = sorted(team_distances)[1:]
-		state.dist_opps = sorted(opp_distances)
+		team_pos = []
+		for s in game_state.states[state.team]:
+			if s.num != state.num:
+				team_pos.append(s.pos)
+
+		self.team_positions = team_pos
+		self.opp_positions  = map(lambda x: x.pos, game_state.states[other_team])
 
 		state.dist_flag     = util.distance(state.pos, game_state.flag_positions[state.team])
-		
-		if state.has_flag:
-			opp_flag_pos = game_state.flag_spawn_positions[state.team]
-		else:
-			opp_flag_pos = game_state.flag_positions[other_team]
-		state.dist_opp_flag = util.distance(state.pos, opp_flag_pos)
+		state.dist_opp_flag = util.distance(state.pos, game_state.flag_positions[other_team])
+		state.dist_base     = util.distance(state.pos, game_state.flag_spawn_positions[state.team])
 
-		if state.dist_opp_flag < config.PLAYER_RADIUS:
+		# if state.has_flag:
+		# 	opp_flag_pos = game_state.flag_spawn_positions[state.team]
+		# else:
+		# 	opp_flag_pos = game_state.flag_positions[other_team]
+		# state.dist_opp_flag = util.distance(state.pos, opp_flag_pos)
+
+		if not state.has_flag and state.dist_opp_flag < config.PLAYER_RADIUS:
 			state.has_flag = True
 
-		if state.has_flag and state.dist_flag < config.PLAYER_RADIUS:
+		if state.has_flag and state.dist_base < config.PLAYER_RADIUS:
 			state.has_flag = False
 
 		self.handle_tagging(state)
@@ -196,18 +222,32 @@ class RewardModel(object):
 		reward = 0
 
 		# calculate reward for getting closer to flag
-		reward += config.FLAG_REWARD_WEIGHT * \
-					(state.dist_opp_flag - new_state.dist_opp_flag)
+		# reward += config.FLAG_REWARD_WEIGHT * \
+		# 			(state.dist_opp_flag - new_state.dist_opp_flag)
 
 		# reward for taking flag
 		if new_state.has_flag and not state.has_flag:
 			reward += config.TAKE_FLAG_REWARD
+			return reward
 		elif state.has_flag and not new_state.has_flag and not state.jail:
 			reward += config.CAPTURE_FLAG_REWARD
+			return reward
+
+		if state.has_flag:
+			opp_flag_delta = 0
+			target_delta   = state.dist_base - new_state.dist_base
+		else:
+			opp_flag_delta = state.dist_opp_flag - new_state.dist_opp_flag
+			target_delta   = 0
+
+		print "OD: {}, TD: {}".format(opp_flag_delta, target_delta)
+
+		q_features = state.q_features(action)
+		# print "QOD: {}, QTD: {}".format(q_features[0], q_features[1])
 
 		# reward for moving closer to flag
 		reward += config.FLAG_REWARD_WEIGHT * \
-					(state.dist_opp_flag - new_state.dist_opp_flag)
+					(opp_flag_delta + target_delta)
 
 		return reward
 		

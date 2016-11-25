@@ -44,13 +44,17 @@ class QLearningAgent(Agent):
 		if not self.weights:
 			self.init_weights(len(state.q_features(Action.stay)))
 
-		adj = game_state.get_adjacent(state)
+		# adj = game_state.get_adjacent(state)
 
 		best_action = None
 		best_score  = None
 
-		for a in adj:
-			score = self.value_of_state(adj[a].q_features(a))
+		print self.weights
+		for a in Action.all_actions():
+			q_features = state.q_features(a)
+			score      = self.value_of_state(q_features)
+			print "{}, {}, {}".format(a, q_features, score)
+
 			if best_score is None or score > best_score:
 				best_score = score
 				best_action = a
@@ -58,6 +62,7 @@ class QLearningAgent(Agent):
 		if random.random() < self.epsilon:
 			return random.choice(Action.all_actions())
 
+		# print "BEST: {}".format(best_action)
 		# self.epsilon *= .95
 		return best_action
 
@@ -74,6 +79,7 @@ class QLearningAgent(Agent):
 
 		self.weights = map(update, zip(self.weights, state_vector))
 
+		print "REWARD: {}".format(reward)
 		# print "pos: {}, action: {}, reward: {}".format(state.pos, action, reward)
 		# print "score: {}, new score: {}".format(self.value_of_state(state_vector), best_new_score)
 		# print "delta: {}".format(delta)
@@ -81,13 +87,20 @@ class QLearningAgent(Agent):
 		# print "flag distance feature weight: {}".format(self.weights[2])
 		# print "player distance feature weight: {}".format(self.weights[0])
 
-		self.alpha *= self.alpha_decay
+		# self.alpha *= self.alpha_decay
 
 	def save_weights(self, filename):
 
 		with open(filename, "w") as writefile:
 			writefile.write(json.dumps(self.weights))
 
+	def load_weights(self, filename):
+
+		with open(filename, "r") as readfile:
+			self.weights = json.load(readfile)
+
+		self.epsilon = 0
+		self.alpha   = 0
 
 
 
