@@ -46,13 +46,18 @@ class State(object):
 		max_dist  = math.sqrt(self.game.width**2 + self.game.height**2)
 		normalize = lambda d: d / max_dist
 
-		return    map(normalize, self.dist_team)  \
-		        + map(normalize, self.dist_opps)  \
-		        + [normalize(self.dist_flag)]     \
-				+ [normalize(self.dist_opp_flag)] \
-				+ [int(self.has_flag)]            \
-				+ [int(self.flag_taken)]          \
-				+ [int(self.enemy_side)]
+		result = []
+
+		result.append(self.dist_opp_flag if not self.has_flag else 0)
+		result.append(self.dist_base if self.has_flag else 0)
+
+		# return    map(normalize, self.dist_team)  \
+		#         + map(normalize, self.dist_opps)  \
+		#         + [normalize(self.dist_flag)]     \
+		# 		+ [normalize(self.dist_opp_flag)] \
+		# 		+ [int(self.has_flag)]            \
+		# 		+ [int(self.flag_taken)]          \
+		# 		+ [int(self.enemy_side)]
 
 	def q_features(self, action):
 		new_pos   = util.normalized_move(self.pos, action, config.PLAYER_SPEED)
