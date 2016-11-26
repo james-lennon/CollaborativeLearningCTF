@@ -182,8 +182,8 @@ class TransitionModel(object):
 			if s.num != state.num:
 				team_pos.append(s.pos)
 
-		self.team_positions = team_pos
-		self.opp_positions  = map(lambda x: x.pos, game_state.states[other_team])
+		state.team_positions = team_pos
+		state.opp_positions  = map(lambda x: x.pos, game_state.states[other_team])
 
 		state.dist_flag     = util.distance(state.pos, game_state.flag_positions[state.team])
 		state.dist_opp_flag = util.distance(state.pos, game_state.flag_positions[other_team])
