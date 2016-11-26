@@ -50,28 +50,6 @@ def single_agent_test(load=False):
 		game.loop()
 		time.sleep(.05)
 
-def load_test():
-	game  = Game(50, 30)
-	agent = QLearningAgent()
-
-
-	# add agents
-	game.add_agent(agent, (25,15), 0)
-
-	# simulate game
-	iterations = 10000
-
-	game.start()
-
-	# run_for_iterations(game, 50000)
-
-	game.add_listener(TerminalListener())
-
-	for _ in xrange(iterations):
-		game.loop()
-		time.sleep(.05)
-
-
 def obstacle_test(load = False):
 	game = Game(50, 30)
 
@@ -86,7 +64,7 @@ def obstacle_test(load = False):
 	game.add_agent(agent2, (25,0), 1)
 
 	# simulate game
-	iterations = 50000
+	iterations = 5000
 
 	atexit.register(lambda: agent2.save_weights("obstacle_weights.txt"))
 

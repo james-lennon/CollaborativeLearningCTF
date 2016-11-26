@@ -88,14 +88,21 @@ class State(object):
 		if capture_flag:
 			target_delta = 0
 
-		return map(pos_delta, team_pos) \
-			 + map(pos_delta, map(lambda x: x.pos, self.game.game_state.states[other_team])) \
-			 + [opp_flag_delta] \
+		if self.jail:
+			opp_flag_delta = 0
+			target_delta   = 0
+
+		return [opp_flag_delta] \
 			 + [target_delta] \
 			 + [int(take_flag)] \
 			 + [int(capture_flag)] \
+			 + [int(self.jail)] \
+			 + [int(self.tagging)] \
 			 + [1.0] # bias
 			 # \
+			 # map(pos_delta, team_pos) \
+			 # + map(pos_delta, map(lambda x: x.pos, self.game.game_state.states[other_team])) \
+			 # +
 			 # + [int(self.enemy_side)]
 			 # + [pos_delta(self.game.game_state.flag_positions[self.team])] \
 
@@ -162,6 +169,10 @@ class TransitionModel(object):
 			# TODO: make spawn point
 			state.pos  = (0,0)
 
+		# only activate tagging flag for one turn
+		if state.tagging:
+			state.tagging = False
+
 		# move to new position if not in jail
 		if not state.jail:
 			new_pos   = util.normalized_move(state.pos, action, config.PLAYER_SPEED)
@@ -195,10 +206,10 @@ class TransitionModel(object):
 		# 	opp_flag_pos = game_state.flag_positions[other_team]
 		# state.dist_opp_flag = util.distance(state.pos, opp_flag_pos)
 
-		if not state.has_flag and state.dist_opp_flag < config.PLAYER_RADIUS:
+		if not state.has_flag and state.dist_opp_flag <= config.PLAYER_RADIUS:
 			state.has_flag = True
 
-		if state.has_flag and state.dist_base < config.PLAYER_RADIUS:
+		if state.has_flag and state.dist_base <= config.PLAYER_RADIUS:
 			state.has_flag = False
 
 		self.handle_tagging(state)
@@ -220,11 +231,11 @@ class RewardModel(object):
 		if new_state.jail and not state.jail:
 			return config.JAIL_REWARD
 
-		reward = 0
+		# reward for tagging
+		if new_state.tagging:
+			return config.TAGGING_REWARD
 
-		# calculate reward for getting closer to flag
-		# reward += config.FLAG_REWARD_WEIGHT * \
-		# 			(state.dist_opp_flag - new_state.dist_opp_flag)
+		reward = 0
 
 		# reward for taking flag
 		if new_state.has_flag and not state.has_flag:
