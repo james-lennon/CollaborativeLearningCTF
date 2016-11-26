@@ -93,7 +93,8 @@ class State(object):
 			 + [opp_flag_delta] \
 			 + [target_delta] \
 			 + [int(take_flag)] \
-			 + [int(capture_flag)]
+			 + [int(capture_flag)] \
+			 + [1.0] # bias
 			 # \
 			 # + [int(self.enemy_side)]
 			 # + [pos_delta(self.game.game_state.flag_positions[self.team])] \
@@ -240,10 +241,9 @@ class RewardModel(object):
 			opp_flag_delta = state.dist_opp_flag - new_state.dist_opp_flag
 			target_delta   = 0
 
-		print "OD: {}, TD: {}".format(opp_flag_delta, target_delta)
+		# print "OD: {}, TD: {}".format(opp_flag_delta, target_delta)
 
 		q_features = state.q_features(action)
-		# print "QOD: {}, QTD: {}".format(q_features[0], q_features[1])
 
 		# reward for moving closer to flag
 		reward += config.FLAG_REWARD_WEIGHT * \

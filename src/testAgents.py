@@ -49,11 +49,11 @@ class QLearningAgent(Agent):
 		best_action = None
 		best_score  = None
 
-		print self.weights
+		# print self.weights
 		for a in Action.all_actions():
 			q_features = state.q_features(a)
 			score      = self.value_of_state(q_features)
-			print "{}, {}, {}".format(a, q_features, score)
+			# print "{}, {}, {}".format(a, q_features, score)
 
 			if best_score is None or score > best_score:
 				best_score = score
@@ -79,7 +79,7 @@ class QLearningAgent(Agent):
 
 		self.weights = map(update, zip(self.weights, state_vector))
 
-		print "REWARD: {}".format(reward)
+		# print "REWARD: {}".format(reward)
 		# print "pos: {}, action: {}, reward: {}".format(state.pos, action, reward)
 		# print "score: {}, new score: {}".format(self.value_of_state(state_vector), best_new_score)
 		# print "delta: {}".format(delta)
