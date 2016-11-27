@@ -32,9 +32,6 @@ class QLearningAgent(Agent):
 
 		self.alpha_decay = alpha_decay
 
-	def init_weights(self, n):
-		self.weights = [0 for _ in xrange(n)]
-
 	def value_of_state(self, state_vector):
 		return sum(map(lambda i: state_vector[i]*self.weights[i], xrange(len(state_vector))))
 
@@ -42,7 +39,7 @@ class QLearningAgent(Agent):
 
 		# check if we haven't initiazed weights yet
 		if not self.weights:
-			self.init_weights(len(state.list_representation()))
+			self.setup_approximation(len(state.list_representation()))
 
 		adj = game_state.get_adjacent(state)
 
@@ -67,6 +64,14 @@ class QLearningAgent(Agent):
 		# self.epsilon *= .95
 		return best_action
 
+	def setup_approximation(self, n):
+		self.weights = [0 for _ in xrange(n)]
+
+	def learn_q(self, state_vector, action, old, new):
+		delta = new - old
+		update = lambda (w, f): w + self.alpha*delta*f
+		self.weights = map(update, zip(self.weights, state_vector))
+
 	def observe_transition(self, state, action, reward, new_state):
 
 		state_vector     = state.list_representation()
@@ -75,14 +80,15 @@ class QLearningAgent(Agent):
 		best_new_score   = max(map(lambda a: self.value_of_state(adj[a].list_representation()), 
 								Action.all_actions()))
 
-		delta = self.gamma * best_new_score + reward - self.value_of_state(state_vector)
+		# delta = self.gamma * best_new_score + reward - self.value_of_state(state_vector)
 
-		update = lambda (w, f): w + self.alpha*delta*f
+		new_score = self.gamma * best_new_score + reward
+		old_score = self.value_of_state(state_vector)
 
 		print self.weights
-		self.weights = map(update, zip(self.weights, state_vector))
+		self.learn_q(state_vector, action, old_score, new_score)
 
-		print "action: {}, reward: {}, delta: {}, feature: {}".format(action, reward, delta, state_vector[1])
+		print "action: {}, reward: {}, delta: {}, feature: {}".format(action, reward, new_score - old_score, state_vector[1])
 		print self.weights
 		# print "REWARD: {}".format(reward)
 		# print "pos: {}, action: {}, reward: {}".format(state.pos, action, reward)
