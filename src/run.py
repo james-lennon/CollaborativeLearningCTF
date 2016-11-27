@@ -60,7 +60,7 @@ def obstacle_test(load = False):
 		agent2.load_weights("obstacle_weights.txt")
 
 	# add agents
-	game.add_agent(agent1, (25,10), 0)
+	# game.add_agent(agent1, (25,10), 0)
 	game.add_agent(agent2, (25,0), 1)
 
 	# simulate game
@@ -77,5 +77,5 @@ def obstacle_test(load = False):
 		time.sleep(.05)
 
 # single_agent_test(True)
-obstacle_test()
+obstacle_test(True)
 # load_test()

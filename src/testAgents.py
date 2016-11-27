@@ -66,6 +66,11 @@ class QLearningAgent(Agent):
 		# self.epsilon *= .95
 		return best_action
 
+	def learn_q(self, state_vector, action, old, new):
+		delta = new - old
+		update = lambda (w, f): w + self.alpha*delta*f
+		self.weights = map(update, zip(self.weights, state_vector))
+
 	def observe_transition(self, state, action, reward, new_state):
 
 		state_vector     = state.q_features(action)
@@ -73,14 +78,15 @@ class QLearningAgent(Agent):
 		best_new_score   = max(map(lambda a: self.value_of_state(new_state.q_features(a)), 
 								Action.all_actions()))
 
-		delta = self.gamma * best_new_score + reward - self.value_of_state(state_vector)
+		# delta = self.gamma * best_new_score + reward - self.value_of_state(state_vector)
 
-		update = lambda (w, f): w + self.alpha*delta*f
+		new_score = self.gamma * best_new_score + reward
+		old_score = self.value_of_state(state_vector)
 
 		print self.weights
-		self.weights = map(update, zip(self.weights, state_vector))
+		self.learn_q(state_vector, action, old_score, new_score)
 
-		print "action: {}, reward: {}, delta: {}, feature: {}".format(action, reward, delta, state_vector[1])
+		print "action: {}, reward: {}, delta: {}, feature: {}".format(action, reward, new_score - old_score, state_vector[1])
 		print self.weights
 		# print "REWARD: {}".format(reward)
 		# print "pos: {}, action: {}, reward: {}".format(state.pos, action, reward)
