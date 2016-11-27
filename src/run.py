@@ -1,6 +1,7 @@
 from game import *
 from agent import *
 from testAgents import *
+from neuralAgent import *
 from terminalListener import *
 import time
 import atexit
@@ -76,6 +77,35 @@ def obstacle_test(load = False):
 		game.loop()
 		time.sleep(.05)
 
+def neural_test(load=False):
+	game  = Game(50, 30)
+	agent = NeuralAgent()
+
+	if load:
+		agent.load_weights("neural_weights.txt")
+
+	# add agents
+	game.add_agent(agent, (25,15), 0)
+
+	# simulate game
+	iterations = 10000
+
+	atexit.register(lambda: agent.save_weights("neural_weights.txt"))
+
+	game.start()
+
+	# run_for_iterations(game, 50000)
+
+	game.add_listener(TerminalListener())
+
+	# agent.alpha = 0
+	# agent.epsilon = 0
+
+	for _ in xrange(iterations):
+		game.loop()
+		time.sleep(.05)
+
 # single_agent_test(True)
-obstacle_test(True)
+# obstacle_test(True)
 # load_test()
+neural_test()
