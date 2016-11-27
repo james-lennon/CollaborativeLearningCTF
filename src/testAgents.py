@@ -42,16 +42,17 @@ class QLearningAgent(Agent):
 
 		# check if we haven't initiazed weights yet
 		if not self.weights:
-			self.init_weights(len(state.q_features(Action.stay)))
+			self.init_weights(len(state.list_representation()))
 
-		# adj = game_state.get_adjacent(state)
+		adj = game_state.get_adjacent(state)
 
 		best_action = None
 		best_score  = None
 
 		# print self.weights
-		for a in Action.all_actions():
-			q_features = state.q_features(a)
+		for a in adj:
+			new_state = adj[a]
+			q_features = new_state.list_representation()
 			score      = self.value_of_state(q_features)
 			print "{}, {}, {}".format(a, q_features, score)
 
@@ -68,9 +69,10 @@ class QLearningAgent(Agent):
 
 	def observe_transition(self, state, action, reward, new_state):
 
-		state_vector     = state.q_features(action)
+		state_vector     = state.list_representation()
 
-		best_new_score   = max(map(lambda a: self.value_of_state(new_state.q_features(a)), 
+		adj = state.game.game_state.get_adjacent(new_state)
+		best_new_score   = max(map(lambda a: self.value_of_state(adj[a].list_representation()), 
 								Action.all_actions()))
 
 		delta = self.gamma * best_new_score + reward - self.value_of_state(state_vector)

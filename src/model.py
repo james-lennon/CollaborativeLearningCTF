@@ -48,8 +48,10 @@ class State(object):
 
 		result = []
 
-		result.append(self.dist_opp_flag if not self.has_flag else 0)
-		result.append(self.dist_base if self.has_flag else 0)
+		result.append(normalize(self.dist_opp_flag) if not self.has_flag else 0)
+		result.append(normalize(self.dist_base) if self.has_flag else 0)
+		result.append(1.0)
+		return result
 
 		# return    map(normalize, self.dist_team)  \
 		#         + map(normalize, self.dist_opps)  \
