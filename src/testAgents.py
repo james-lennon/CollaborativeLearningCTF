@@ -32,9 +32,6 @@ class QLearningAgent(Agent):
 
 		self.alpha_decay = alpha_decay
 
-	def init_weights(self, n):
-		self.weights = [0 for _ in xrange(n)]
-
 	def value_of_state(self, state_vector):
 		return sum(map(lambda i: state_vector[i]*self.weights[i], xrange(len(state_vector))))
 
@@ -42,7 +39,7 @@ class QLearningAgent(Agent):
 
 		# check if we haven't initiazed weights yet
 		if not self.weights:
-			self.init_weights(len(state.q_features(Action.stay)))
+			self.setup_approximation(len(state.q_features(Action.stay)))
 
 		# adj = game_state.get_adjacent(state)
 
@@ -65,6 +62,9 @@ class QLearningAgent(Agent):
 		# print "BEST: {}".format(best_action)
 		# self.epsilon *= .95
 		return best_action
+
+	def setup_approximation(self, n):
+		self.weights = [0 for _ in xrange(n)]
 
 	def learn_q(self, state_vector, action, old, new):
 		delta = new - old
