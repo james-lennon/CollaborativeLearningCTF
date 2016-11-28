@@ -79,7 +79,7 @@ class QLearningAgent(Agent):
 
 		if self.debug and (new_state.jail or state.jail):
 			print "jail"
-		if reward == config.CAPTURE_FLAG_REWARD:
+		if self.debug and reward == config.CAPTURE_FLAG_REWARD:
 			print "capture"
 
 		state_vector     = state.q_features(action)

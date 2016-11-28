@@ -65,11 +65,12 @@ def obstacle_test(load = False):
 	game.add_agent(agent2, (0,0), 1)
 
 	# simulate game
-	iterations = 50000
+	iterations = 10000
 
 	atexit.register(lambda: agent2.save_weights("obstacle_weights.txt"))
 
 	game.start()
+	agent2.debug = True
 	run_for_iterations(game, iterations)
 
 	agent2.debug = True
@@ -78,7 +79,7 @@ def obstacle_test(load = False):
 
 	for _ in xrange(iterations):
 		game.loop()
-		time.sleep(.05)
+		time.sleep(.5)
 
 def neural_test(load=False):
 	game  = Game(50, 30)

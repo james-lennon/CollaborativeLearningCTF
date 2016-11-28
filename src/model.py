@@ -100,9 +100,12 @@ class State(object):
 		if capture_flag:
 			target_delta = 0
 
+		bias = 1.0
+
 		if new_state.jail or capture_flag or take_flag:
 			opp_flag_delta = 0
 			target_delta   = 0
+			bias           = 0
 
 		return [opp_flag_delta/max_dist] \
 			 + [target_delta/max_dist] \
@@ -111,7 +114,7 @@ class State(object):
 			 + [float(new_state.jail)] \
 			 + [float(new_state.tagging)] \
 			 + [float(nearby_count)] \
-			 + [1.0] # bias
+			 + [bias]
 			 # \
 			 # map(pos_delta, team_pos) \
 			 # + map(pos_delta, map(lambda x: x.pos, self.game.game_state.states[other_team])) \
