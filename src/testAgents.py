@@ -2,6 +2,7 @@ from agent import Agent
 from model import Action
 import random
 import json
+import config
 
 class MoveRightAgent(Agent):
 
@@ -78,6 +79,8 @@ class QLearningAgent(Agent):
 
 		if self.debug and (new_state.jail or state.jail):
 			print "jail"
+		if reward == config.CAPTURE_FLAG_REWARD:
+			print "capture"
 
 		state_vector     = state.q_features(action)
 

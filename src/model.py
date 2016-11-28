@@ -56,6 +56,8 @@ class State(object):
 
 	def q_features(self, action):
 
+		max_dist = config.PLAYER_SPEED
+
 		new_state = self.game.transition_model.apply_action(self, action, self.game.game_state)
 		new_pos   = new_state.pos
 
@@ -69,6 +71,12 @@ class State(object):
 		for s in self.game.game_state.states[self.team]:
 			if s.num != self.num:
 				team_pos.append(s.pos)
+
+		nearby_distance = 3 * config.PLAYER_RADIUS
+		nearby_count    = 0
+		for p in new_state.opp_positions:
+			if util.distance(p, new_pos) <= nearby_distance:
+				nearby_count += 1
 
 		base_pos     = self.game.game_state.flag_spawn_positions[self.team]
 		opp_flag_pos = self.game.game_state.flag_positions[other_team]
@@ -92,16 +100,17 @@ class State(object):
 		if capture_flag:
 			target_delta = 0
 
-		if new_state.jail:
+		if new_state.jail or capture_flag or take_flag:
 			opp_flag_delta = 0
 			target_delta   = 0
 
-		return [opp_flag_delta] \
-			 + [target_delta] \
+		return [opp_flag_delta/max_dist] \
+			 + [target_delta/max_dist] \
 			 + [float(take_flag)] \
 			 + [float(capture_flag)] \
 			 + [float(new_state.jail)] \
 			 + [float(new_state.tagging)] \
+			 + [float(nearby_count)] \
 			 + [1.0] # bias
 			 # \
 			 # map(pos_delta, team_pos) \

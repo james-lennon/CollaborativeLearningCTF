@@ -62,7 +62,7 @@ def obstacle_test(load = False):
 
 	# add agents
 	game.add_agent(agent1, (25,10), 0)
-	game.add_agent(agent2, (25,0), 1)
+	game.add_agent(agent2, (0,0), 1)
 
 	# simulate game
 	iterations = 50000
