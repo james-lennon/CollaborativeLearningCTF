@@ -1,6 +1,7 @@
 from game import *
 from agent import *
 from testAgents import *
+from heuristicAgent import *
 from neuralAgent import *
 from terminalListener import *
 import time
@@ -125,22 +126,57 @@ def team_test(load=False):
 
 	# add agents
 	game.add_agent(agent1, (5,10), 0)
-	game.add_agent(agent1b, (27,10), 0)
+	game.add_agent(agent1b, (25,10), 0)
 	game.add_agent(agent2, (0,0), 1)
 	game.add_agent(agent2b, (0,50), 1)
 
 	# simulate game
-	iterations = 50000
+	iterations = 10000
 
 	atexit.register(lambda: agent2.save_weights("team_weights.txt"))
 
 	game.start()
-	agent2.debug = True
-	# run_for_iterations(game, iterations)
+	# agent2.debug = True
+	run_for_iterations(game, iterations)
 
 	agent2.debug = True
 	game.add_listener(TerminalListener())
-	agent2.epsilon = 0.1
+	agent2.epsilon = 0
+	agent2b.epsilon = 0
+
+	for _ in xrange(iterations):
+		game.loop()
+		time.sleep(.05)
+
+def enemy_test(load=False):
+	game = Game(50, 30)
+
+	agent1 = HeuristicAgent()
+	agent2 = QLearningAgent(epsilon=0.5, alpha_decay = 0.99)
+	# agent2b = QLearningAgent(epsilon=0.5, alpha_decay = 0.99)
+
+	if load:
+		agent2.load_weights("enemy_weights.txt")
+		agent2.alpha = 0
+
+	# add agents
+	game.add_agent(agent1, (5,10), 0)
+	game.add_agent(agent2, (0,0), 1)
+	# game.add_agent(agent2b, (0,50), 1)
+
+	# simulate game
+	iterations = 10000
+
+	atexit.register(lambda: agent2.save_weights("enemy_weights.txt"))
+
+	game.start()
+	# agent2.debug = True
+	run_for_iterations(game, iterations)
+
+	agent2.debug = True
+	game.add_listener(TerminalListener())
+	# agent2.epsilon = 0
+	# agent2b.epsilon = 0
 
 	for _ in xrange(iterations):
 		game.loop()
@@ -149,6 +185,7 @@ def team_test(load=False):
 
 
 # single_agent_test(True)
-obstacle_test()
+# obstacle_test()
 # neural_test(True)
 # team_test()
+enemy_test()

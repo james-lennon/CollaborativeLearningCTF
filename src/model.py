@@ -198,7 +198,7 @@ class TransitionModel(object):
 			state.jail = False
 			can_move   = False
 			# TODO: make spawn point
-			state.pos  = (0,0)
+			state.pos  = game_state.flag_spawn_positions[state.team]
 
 		# only activate tagging flag for one turn
 		if state.tagging:
