@@ -107,8 +107,13 @@ class State(object):
 			target_delta   = 0
 			bias           = 0
 
-		return [opp_flag_delta/max_dist] \
-			 + [target_delta/max_dist] \
+		opp_flag_delta /= max_dist
+		target_delta   /= max_dist
+
+		return [max(opp_flag_delta, 0)] \
+		     + [-min(opp_flag_delta, 0)] \
+			 + [max(target_delta, 0)] \
+			 + [-min(target_delta, 0)] \
 			 + [float(take_flag)] \
 			 + [float(capture_flag)] \
 			 + [float(new_state.jail)] \
