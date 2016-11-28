@@ -77,7 +77,7 @@ def obstacle_test(load = False):
 
 	agent2.debug = True
 	game.add_listener(TerminalListener())
-	agent2.epsilon = 0.1
+	agent2.epsilon = 0
 
 	for _ in xrange(iterations):
 		game.loop()
@@ -149,6 +149,6 @@ def team_test(load=False):
 
 
 # single_agent_test(True)
-# obstacle_test(True)
+obstacle_test(True)
 # neural_test(True)
-team_test()
+# team_test()
