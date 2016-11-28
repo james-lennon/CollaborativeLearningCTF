@@ -101,7 +101,7 @@ class State(object):
 		if capture_flag:
 			target_delta = 0
 
-		bias = 0 #1.0
+		bias = 1.0
 
 		if new_state.jail or new_state.tagged or capture_flag or take_flag:
 			opp_flag_delta = 0

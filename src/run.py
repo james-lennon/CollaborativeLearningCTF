@@ -72,8 +72,8 @@ def obstacle_test(load = False):
 	atexit.register(lambda: agent2.save_weights("obstacle_weights.txt"))
 
 	game.start()
-	agent2.debug = True
-	# run_for_iterations(game, iterations)
+	# agent2.debug = True
+	run_for_iterations(game, iterations)
 
 	agent2.debug = True
 	game.add_listener(TerminalListener())
@@ -149,6 +149,6 @@ def team_test(load=False):
 
 
 # single_agent_test(True)
-obstacle_test(True)
+obstacle_test()
 # neural_test(True)
 # team_test()

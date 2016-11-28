@@ -3,6 +3,7 @@ from model import Action
 import random
 import json
 import config
+from qFunction import QFunction
 
 class MoveRightAgent(Agent):
 
@@ -26,7 +27,6 @@ class QLearningAgent(Agent):
 	def __init__(self, alpha = .5, epsilon = .1, alpha_decay = .999, debug = False):
 		Agent.__init__(self)
 
-		self.weights = None
 		self.alpha   = alpha
 		self.epsilon = epsilon
 		self.gamma   = .5
@@ -35,13 +35,13 @@ class QLearningAgent(Agent):
 		self.debug = debug
 
 	def value_of_state(self, state_vector):
-		return sum(map(lambda i: state_vector[i]*self.weights[i], xrange(len(state_vector))))
+		return QFunction.evaluate(state_vector)
 
 	def choose_action(self, state, game_state):
 
 		# check if we haven't initiazed weights yet
-		if not self.weights:
-			self.setup_approximation(len(state.q_features(Action.stay)))
+		if not QFunction.is_initialized():
+			QFunction.setup(len(state.q_features(Action.stay)))
 
 		# adj = game_state.get_adjacent(state)
 
@@ -67,13 +67,8 @@ class QLearningAgent(Agent):
 		# self.epsilon *= .95
 		return best_action
 
-	def setup_approximation(self, n):
-		self.weights = [0 for _ in xrange(n)]
-
 	def learn_q(self, state_vector, action, old, new):
-		delta = new - old
-		update = lambda (w, f): w + self.alpha*delta*f
-		self.weights = map(update, zip(self.weights, state_vector))
+		QFunction.learn(self.alpha, state_vector, action, old, new)
 
 	def observe_transition(self, state, action, reward, new_state):
 
@@ -95,14 +90,14 @@ class QLearningAgent(Agent):
 		old_score = self.value_of_state(state_vector)
 
 		if self.debug:
-			print self.weights
+			print QFunction.weights
 
 		self.learn_q(state_vector, action, old_score, new_score)
 
 		if self.debug:
 			print state_vector
 			print "action: {}, reward: {}, delta: {}, feature: {}".format(action, reward, new_score - old_score, state_vector[1])
-			print self.weights
+			print QFunction.weights
 		# print "REWARD: {}".format(reward)
 		# print "pos: {}, action: {}, reward: {}".format(state.pos, action, reward)
 		# print "score: {}, new score: {}".format(self.value_of_state(state_vector), best_new_score)
@@ -115,13 +110,11 @@ class QLearningAgent(Agent):
 
 	def save_weights(self, filename):
 
-		with open(filename, "w") as writefile:
-			writefile.write(json.dumps(self.weights))
+		QFunction.save(filename)
 
 	def load_weights(self, filename):
 
-		with open(filename, "r") as readfile:
-			self.weights = json.load(readfile)
+		QFunction.load(filename)
 
 		self.epsilon = 0
 		# self.alpha   = 0

@@ -1,12 +1,26 @@
-
+import json
 
 class QFunction(object):
 
     weights = None
 
     @classmethod
+    def is_initialized(cls):
+        return cls.weights is not None
+
+    @classmethod
     def setup(cls, n):
         cls.weights = [0 for _ in xrange(n)]
+
+    @classmethod
+    def load(cls, filename):
+        with open(filename, "r") as readfile:
+            cls.weights = json.load(readfile)
+
+    @classmethod
+    def save(cls, filename):
+        with open(filename, "w") as writefile:
+            writefile.write(json.dumps(cls.weights))
 
     @classmethod
     def evaluate(cls, state_vector):
