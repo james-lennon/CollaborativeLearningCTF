@@ -55,7 +55,7 @@ def obstacle_test(load = False):
 	game = Game(50, 30)
 
 	agent1 = Agent()
-	agent2 = QLearningAgent(alpha_decay = 0.8)
+	agent2 = QLearningAgent(epsilon=0.5, alpha_decay = 0.8)
 
 	if load:
 		agent2.load_weights("obstacle_weights.txt")
@@ -70,12 +70,12 @@ def obstacle_test(load = False):
 	atexit.register(lambda: agent2.save_weights("obstacle_weights.txt"))
 
 	game.start()
-	agent2.debug = True
-	# run_for_iterations(game, iterations)
+	# agent2.debug = True
+	run_for_iterations(game, iterations)
 
 	agent2.debug = True
 	game.add_listener(TerminalListener())
-	# agent2.epsilon = 0
+	agent2.epsilon = 0.2
 
 	for _ in xrange(iterations):
 		game.loop()

@@ -28,7 +28,7 @@ class QLearningAgent(Agent):
 
 		self.weights = None
 		self.alpha   = alpha
-		self.epsilon = .3
+		self.epsilon = epsilon
 		self.gamma   = .5
 
 		self.alpha_decay = alpha_decay
