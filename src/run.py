@@ -7,6 +7,7 @@ from terminalListener import *
 import time
 import atexit
 import sys
+from graphicsListener import GraphicsListener
 
 class DebugListener(GameListener):
 
@@ -175,6 +176,7 @@ def enemy_test(load=False):
 
 	agent2.debug = True
 	game.add_listener(TerminalListener())
+	game.add_listener(GraphicsListener(game))
 	# agent2.epsilon = 0
 	# agent2b.epsilon = 0
 
