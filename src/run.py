@@ -25,7 +25,7 @@ def run_for_iterations(game, iterations):
 
 def single_agent_test(load=False):
 	game  = Game(50, 30)
-	agent = QLearningAgent()
+	agent = QLearningAgent(epsilon=.5)
 
 	if load:
 		agent.load_weights("single_agent_weights.txt")
@@ -34,12 +34,13 @@ def single_agent_test(load=False):
 	game.add_agent(agent, (25,15), 0)
 
 	# simulate game
-	iterations = 10000
+	iterations = 5000
 
 	atexit.register(lambda: agent.save_weights("single_agent_weights.txt"))
 
 	game.start()
 
+	agent.debug = True
 	# run_for_iterations(game, 50000)
 
 	game.add_listener(TerminalListener())
@@ -55,13 +56,15 @@ def obstacle_test(load = False):
 	game = Game(50, 30)
 
 	agent1 = Agent()
-	agent2 = QLearningAgent(epsilon=0.5, alpha_decay = 0.8)
+	agent1b = Agent()
+	agent2 = QLearningAgent(epsilon=0.5, alpha_decay = 0.999)
 
 	if load:
 		agent2.load_weights("obstacle_weights.txt")
 
 	# add agents
-	game.add_agent(agent1, (25,10), 0)
+	game.add_agent(agent1, (15,10), 0)
+	game.add_agent(agent1b, (35,10), 0)
 	game.add_agent(agent2, (0,0), 1)
 
 	# simulate game
@@ -75,7 +78,7 @@ def obstacle_test(load = False):
 
 	agent2.debug = True
 	game.add_listener(TerminalListener())
-	agent2.epsilon = 0.2
+	# agent2.epsilon = 0.2
 
 	for _ in xrange(iterations):
 		game.loop()
@@ -109,7 +112,7 @@ def neural_test(load=False):
 		game.loop()
 		time.sleep(.05)
 
-# single_agent_test(True)
-obstacle_test()
+single_agent_test(True)
+# obstacle_test(True)
 # load_test()
 # neural_test(True)

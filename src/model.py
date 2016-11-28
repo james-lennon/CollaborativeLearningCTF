@@ -118,8 +118,8 @@ class State(object):
 			 + [float(capture_flag)] \
 			 + [float(new_state.jail)] \
 			 + [float(new_state.tagging)] \
-			 + [float(nearby_count)] \
-			 + [bias]
+			 + [float(nearby_count)]
+			 # + [bias]
 			 # \
 			 # map(pos_delta, team_pos) \
 			 # + map(pos_delta, map(lambda x: x.pos, self.game.game_state.states[other_team])) \
