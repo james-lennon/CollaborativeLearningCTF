@@ -74,10 +74,14 @@ class State(object):
 				team_pos.append(s.pos)
 
 		nearby_distance = 2 * config.PLAYER_RADIUS
-		nearby_count    = 0
+		nearby_count1   = 0
+		nearby_count2   = 0
 		for p in new_state.opp_positions:
 			if util.distance(p, new_pos) <= nearby_distance:
-				nearby_count += 1
+				if new_state.enemy_side:
+					nearby_count1 += 1
+				else:
+					nearby_count2 += 1
 
 		base_pos     = self.game.game_state.flag_spawn_positions[self.team]
 		opp_flag_pos = self.game.game_state.flag_positions[other_team]
@@ -119,7 +123,9 @@ class State(object):
 			 + [float(capture_flag)] \
 			 + [float(new_state.jail or new_state.tagged)] \
 			 + [float(new_state.tagging)] \
-			 + [float(nearby_count)] \
+			 + [float(nearby_count1)] \
+			 + [float(nearby_count2)] \
+			 + [float(new_state.enemy_side)] \
 			 + [bias]
 			 # \
 			 # map(pos_delta, team_pos) \
@@ -198,7 +204,7 @@ class TransitionModel(object):
 			state.jail = False
 			can_move   = False
 			# TODO: make spawn point
-			state.pos  = game_state.flag_spawn_positions[state.team]
+			state.pos  = (0, game_state.flag_spawn_positions[state.team][1])
 
 		# only activate tagging flag for one turn
 		if state.tagging:

@@ -152,8 +152,8 @@ def enemy_test(load=False):
 	game = Game(50, 30)
 
 	agent1 = HeuristicAgent()
-	agent2 = QLearningAgent(epsilon=0.5, alpha_decay = 0.99)
-	# agent2b = QLearningAgent(epsilon=0.5, alpha_decay = 0.99)
+	agent2 = QLearningAgent(epsilon=0.5, alpha=.2, alpha_decay = 1.0)
+	agent2b = QLearningAgent(epsilon=0.5, alpha_decay = 0.99)
 
 	if load:
 		agent2.load_weights("enemy_weights.txt")
@@ -162,7 +162,7 @@ def enemy_test(load=False):
 	# add agents
 	game.add_agent(agent1, (5,10), 0)
 	game.add_agent(agent2, (0,0), 1)
-	# game.add_agent(agent2b, (0,50), 1)
+	game.add_agent(agent2b, (0,50), 1)
 
 	# simulate game
 	iterations = 10000
