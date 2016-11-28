@@ -37,6 +37,7 @@ class State(object):
 		self.pos = (0,0)
 		self.jail = False
 		self.tagging = False
+		self.tagged = False
 
 		self.game = game
 		self.num  = num
@@ -102,7 +103,7 @@ class State(object):
 
 		bias = 1.0
 
-		if new_state.jail or capture_flag or take_flag:
+		if new_state.jail or new_state.tagged or capture_flag or take_flag:
 			opp_flag_delta = 0
 			target_delta   = 0
 			bias           = 0
@@ -116,10 +117,10 @@ class State(object):
 			 + [-min(target_delta, 0)] \
 			 + [float(take_flag)] \
 			 + [float(capture_flag)] \
-			 + [float(new_state.jail)] \
+			 + [float(new_state.jail or new_state.tagged)] \
 			 + [float(new_state.tagging)] \
-			 + [float(nearby_count)]
-			 # + [bias]
+			 + [float(nearby_count)] \
+			 + [bias]
 			 # \
 			 # map(pos_delta, team_pos) \
 			 # + map(pos_delta, map(lambda x: x.pos, self.game.game_state.states[other_team])) \
@@ -161,6 +162,13 @@ class TransitionModel(object):
 
 	def handle_tagging(self, state):
 
+		if state.tagged:
+			state.tagged   = False
+			state.jail     = True
+			state.pos      = self.jail_pos
+			state.has_flag = False
+			return
+
 		# return if we're touching an enemy
 		touching = any(map(lambda x: 
 			util.distance(state.pos, x) <= config.PLAYER_RADIUS, state.opp_positions))
@@ -168,10 +176,9 @@ class TransitionModel(object):
 		if not touching: return
 
 		state.tagging = False
+		state.tagged  = False
 		if state.enemy_side or state.has_flag:
-			state.jail     = True
-			state.pos      = self.jail_pos
-			state.has_flag = False
+			state.tagged = True
 		elif not state.has_flag and not state.enemy_side:
 			state.tagging = True
 
@@ -288,6 +295,7 @@ class RewardModel(object):
 		# reward for moving closer to flag
 		reward += config.FLAG_REWARD_WEIGHT * \
 					(opp_flag_delta + target_delta)
+		reward += config.ELAPSE_TIME_REWARD
 
 		return reward
 		

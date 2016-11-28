@@ -29,6 +29,7 @@ def single_agent_test(load=False):
 
 	if load:
 		agent.load_weights("single_agent_weights.txt")
+		agent.alpha = 0
 
 	# add agents
 	game.add_agent(agent, (25,15), 0)
@@ -61,10 +62,11 @@ def obstacle_test(load = False):
 
 	if load:
 		agent2.load_weights("obstacle_weights.txt")
+		agent2.alpha = 0
 
 	# add agents
-	game.add_agent(agent1, (15,10), 0)
-	game.add_agent(agent1b, (35,10), 0)
+	game.add_agent(agent1, (25,10), 0)
+	# game.add_agent(agent1b, (35,10), 0)
 	game.add_agent(agent2, (0,0), 1)
 
 	# simulate game
@@ -73,12 +75,12 @@ def obstacle_test(load = False):
 	atexit.register(lambda: agent2.save_weights("obstacle_weights.txt"))
 
 	game.start()
-	# agent2.debug = True
-	run_for_iterations(game, iterations)
+	agent2.debug = True
+	# run_for_iterations(game, iterations)
 
 	agent2.debug = True
 	game.add_listener(TerminalListener())
-	# agent2.epsilon = 0.2
+	agent2.epsilon = 0.1
 
 	for _ in xrange(iterations):
 		game.loop()
@@ -112,7 +114,7 @@ def neural_test(load=False):
 		game.loop()
 		time.sleep(.05)
 
-single_agent_test(True)
-# obstacle_test(True)
+# single_agent_test(True)
+obstacle_test(True)
 # load_test()
 # neural_test(True)

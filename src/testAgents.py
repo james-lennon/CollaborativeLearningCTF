@@ -111,7 +111,7 @@ class QLearningAgent(Agent):
 		# print "flag distance feature weight: {}".format(self.weights[2])
 		# print "player distance feature weight: {}".format(self.weights[0])
 
-		# self.alpha *= self.alpha_decay
+		self.alpha *= self.alpha_decay
 
 	def save_weights(self, filename):
 
