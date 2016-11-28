@@ -23,7 +23,7 @@ class RandomAgent(Agent):
 
 class QLearningAgent(Agent):
 
-	def __init__(self, alpha = .5, epsilon = .1, alpha_decay = .9, debug = False):
+	def __init__(self, alpha = .5, epsilon = .1, alpha_decay = .999, debug = False):
 		Agent.__init__(self)
 
 		self.weights = None
