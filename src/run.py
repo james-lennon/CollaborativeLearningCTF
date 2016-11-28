@@ -55,23 +55,26 @@ def obstacle_test(load = False):
 	game = Game(50, 30)
 
 	agent1 = Agent()
-	agent2 = QLearningAgent(alpha_decay = 0.9)
+	agent2 = QLearningAgent(alpha_decay = 0.7)
 
 	if load:
 		agent2.load_weights("obstacle_weights.txt")
 
 	# add agents
-	# game.add_agent(agent1, (25,10), 0)
+	game.add_agent(agent1, (25,10), 0)
 	game.add_agent(agent2, (25,0), 1)
 
 	# simulate game
-	iterations = 5000
+	iterations = 50000
 
 	atexit.register(lambda: agent2.save_weights("obstacle_weights.txt"))
 
 	game.start()
-	# run_for_iterations(game, iterations)
+	run_for_iterations(game, iterations)
+
+	agent2.debug = True
 	game.add_listener(TerminalListener())
+	agent2.epsilon = 0
 
 	for _ in xrange(iterations):
 		game.loop()
@@ -106,6 +109,6 @@ def neural_test(load=False):
 		time.sleep(.05)
 
 # single_agent_test(True)
-# obstacle_test(True)
+obstacle_test()
 # load_test()
-neural_test()
+# neural_test(True)

@@ -22,15 +22,16 @@ class RandomAgent(Agent):
 
 class QLearningAgent(Agent):
 
-	def __init__(self, alpha = .5, epsilon = .1, alpha_decay = .9):
+	def __init__(self, alpha = .5, epsilon = .1, alpha_decay = .9, debug = False):
 		Agent.__init__(self)
 
 		self.weights = None
 		self.alpha   = alpha
 		self.epsilon = .3
-		self.gamma   = .8
+		self.gamma   = .5
 
 		self.alpha_decay = alpha_decay
+		self.debug = debug
 
 	def value_of_state(self, state_vector):
 		return sum(map(lambda i: state_vector[i]*self.weights[i], xrange(len(state_vector))))
@@ -50,7 +51,9 @@ class QLearningAgent(Agent):
 		for a in Action.all_actions():
 			q_features = state.q_features(a)
 			score      = self.value_of_state(q_features)
-			print "{}, {}, {}".format(a, q_features, score)
+
+			if self.debug:
+				print "{}, {}, {}".format(a, q_features, score)
 
 			if best_score is None or score > best_score:
 				best_score = score
@@ -73,21 +76,30 @@ class QLearningAgent(Agent):
 
 	def observe_transition(self, state, action, reward, new_state):
 
+		if self.debug and (new_state.jail or state.jail):
+			print "jail"
+
 		state_vector     = state.q_features(action)
 
 		best_new_score   = max(map(lambda a: self.value_of_state(new_state.q_features(a)), 
 								Action.all_actions()))
+		if new_state.jail:
+			best_new_score = 0
 
 		# delta = self.gamma * best_new_score + reward - self.value_of_state(state_vector)
 
 		new_score = self.gamma * best_new_score + reward
 		old_score = self.value_of_state(state_vector)
 
-		print self.weights
+		if self.debug:
+			print self.weights
+
 		self.learn_q(state_vector, action, old_score, new_score)
 
-		print "action: {}, reward: {}, delta: {}, feature: {}".format(action, reward, new_score - old_score, state_vector[1])
-		print self.weights
+		if self.debug:
+			print state_vector
+			print "action: {}, reward: {}, delta: {}, feature: {}".format(action, reward, new_score - old_score, state_vector[1])
+			print self.weights
 		# print "REWARD: {}".format(reward)
 		# print "pos: {}, action: {}, reward: {}".format(state.pos, action, reward)
 		# print "score: {}, new score: {}".format(self.value_of_state(state_vector), best_new_score)
@@ -109,9 +121,7 @@ class QLearningAgent(Agent):
 			self.weights = json.load(readfile)
 
 		self.epsilon = 0
-		self.alpha   = 0
-
-
+		# self.alpha   = 0
 
 
 

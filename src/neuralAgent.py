@@ -4,6 +4,7 @@ from pybrain.datasets import SupervisedDataSet
 from pybrain.supervised.trainers import BackpropTrainer
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.structure.modules import TanhLayer, LinearLayer
+import pickle
 
 class NeuralAgent(QLearningAgent):
 
@@ -20,4 +21,14 @@ class NeuralAgent(QLearningAgent):
 
 		self.trainer.setData(ds)
 		self.trainer.trainEpochs(10)
+
+		print new - self.value_of_state(state_vector)
+
+	def save_weights(self, filename):
+		with open(filename, "w") as savefile:
+			pickle.dump(self.neural_net, savefile)
+
+	def load_weights(self, filename):
+		with open(filename, "r") as readfile:
+			self.neural_net = pickle.load(readfile)
 		

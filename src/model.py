@@ -55,8 +55,12 @@ class State(object):
 				+ [int(self.enemy_side)]
 
 	def q_features(self, action):
-		new_pos   = util.normalized_move(self.pos, action, config.PLAYER_SPEED)
-		new_pos   = util.make_in_range(new_pos, self.game.width, self.game.height)
+
+		new_state = self.game.transition_model.apply_action(self, action, self.game.game_state)
+		new_pos   = new_state.pos
+
+		# new_pos   = util.normalized_move(self.pos, action, config.PLAYER_SPEED)
+		# new_pos   = util.make_in_range(new_pos, self.game.width, self.game.height)
 		pos_delta = lambda p: util.distance(new_pos, p) - util.distance(self.pos, p)
 
 		other_team = self.team ^ 1
@@ -88,16 +92,16 @@ class State(object):
 		if capture_flag:
 			target_delta = 0
 
-		if self.jail:
+		if new_state.jail:
 			opp_flag_delta = 0
 			target_delta   = 0
 
 		return [opp_flag_delta] \
 			 + [target_delta] \
-			 + [int(take_flag)] \
-			 + [int(capture_flag)] \
-			 + [int(self.jail)] \
-			 + [int(self.tagging)] \
+			 + [float(take_flag)] \
+			 + [float(capture_flag)] \
+			 + [float(new_state.jail)] \
+			 + [float(new_state.tagging)] \
 			 + [1.0] # bias
 			 # \
 			 # map(pos_delta, team_pos) \
@@ -151,7 +155,7 @@ class TransitionModel(object):
 			state.jail     = True
 			state.pos      = self.jail_pos
 			state.has_flag = False
-		elif not state.enemy_side:
+		elif not state.has_flag and not state.enemy_side:
 			state.tagging = True
 
 
@@ -163,9 +167,12 @@ class TransitionModel(object):
 		# make duplicate so we don't modify state
 		state = copy.copy(old_state)
 
+		can_move = True
+
 		# if in jail, move out of jail (for now)
 		if state.jail:
 			state.jail = False
+			can_move   = False
 			# TODO: make spawn point
 			state.pos  = (0,0)
 
@@ -174,13 +181,15 @@ class TransitionModel(object):
 			state.tagging = False
 
 		# move to new position if not in jail
-		if not state.jail:
+		if can_move:
 			new_pos   = util.normalized_move(state.pos, action, config.PLAYER_SPEED)
 			state.pos = util.make_in_range(new_pos, game_state.width, game_state.height)
 
 		# update enemy side
 		halfway = game_state.height / 2
-		if state.pos[1] > halfway and state.team == 0:
+		if state.pos[1] >= halfway and state.team == 0:
+			state.enemy_side = True
+		elif state.pos[1] < halfway and state.team == 1:
 			state.enemy_side = True
 		else:
 			state.enemy_side = False
@@ -230,6 +239,9 @@ class RewardModel(object):
 		# punish for jail
 		if new_state.jail and not state.jail:
 			return config.JAIL_REWARD
+
+		if state.jail:
+			return config.JAIL_TIME_REWARD
 
 		# reward for tagging
 		if new_state.tagging:
