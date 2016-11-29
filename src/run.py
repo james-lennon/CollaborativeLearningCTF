@@ -153,8 +153,8 @@ def enemy_test(load=False):
 	game = Game(50, 30)
 
 	agent1 = HeuristicAgent()
-	agent2 = QLearningAgent(epsilon=0.5, alpha_decay = .99)
-	agent2b = QLearningAgent(epsilon=0.5, alpha_decay = 0.99)
+	agent2 = QLearningAgent(epsilon=0.5, alpha_decay=.99)
+	agent2b = QLearningAgent(epsilon=0.5, alpha_decay=0.99)
 
 	if load:
 		agent2.load_weights("obstacle_weights.txt")
@@ -165,6 +165,8 @@ def enemy_test(load=False):
 	game.add_agent(agent2, (0,0), 1)
 	game.add_agent(agent2b, (0,50), 1)
 
+	game.set_team_agent(TeamAgent(), 1)
+
 	# simulate game
 	iterations = 10000
 
@@ -172,7 +174,7 @@ def enemy_test(load=False):
 
 	game.start()
 	# agent2.debug = True
-	run_for_iterations(game, iterations)
+	# run_for_iterations(game, iterations)
 
 	agent2.debug = True
 	game.add_listener(TerminalListener())

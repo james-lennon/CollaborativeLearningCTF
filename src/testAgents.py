@@ -77,6 +77,10 @@ class QLearningAgent(Agent):
 		if self.debug and reward == config.CAPTURE_FLAG_REWARD:
 			print "capture"
 
+		# check if we haven't initiazed weights yet
+		if not QFunction.is_initialized():
+			QFunction.setup(len(state.q_features(Action.stay)))
+
 		state_vector     = state.q_features(action)
 
 		best_new_score   = max(map(lambda a: self.value_of_state(new_state.q_features(a)), 
