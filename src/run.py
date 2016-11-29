@@ -27,7 +27,7 @@ def run_for_iterations(game, iterations):
 			sys.stdout.flush()
 
 def single_agent_test(load=False):
-	game  = Game(50, 30)
+	game  = Game(50, 100)
 	agent = QLearningAgent(alpha_decay=.99, epsilon=.5)
 
 	if load:
@@ -47,7 +47,7 @@ def single_agent_test(load=False):
 	agent.debug = True
 	# run_for_iterations(game, 50000)
 
-	game.add_listener(TerminalListener())
+	game.add_listener(GraphicsListener(game))
 
 	for _ in xrange(iterations):
 		game.loop()
@@ -151,7 +151,7 @@ def team_test(load=False):
 		time.sleep(.05)
 
 def enemy_test(load=False):
-	game = Game(50, 30)
+	game = Game(100, 100)
 
 	agent1 = HeuristicAgent()
 	agent2 = QLearningAgent(epsilon=0.5, alpha_decay=.99)
@@ -179,8 +179,8 @@ def enemy_test(load=False):
 		run_for_iterations(game, iterations)
 
 	agent2.debug = True
-	game.add_listener(TerminalListener())
-	# game.add_listener(GraphicsListener(game))
+	# game.add_listener(TerminalListener())
+	game.add_listener(GraphicsListener(game))
 	# agent2.epsilon = 0
 	# agent2b.epsilon = 0
 
@@ -190,7 +190,7 @@ def enemy_test(load=False):
 
 
 
-# single_agent_test(True)
+# single_agent_test()
 # obstacle_test()
 # neural_test(True)
 # team_test()
