@@ -37,6 +37,9 @@ class GraphicsListener(GameListener):
         # print "FLAG POSITIONS"
         # print game_state.flag_positions
         
+        
+        linex = game_state.height * self.scale * 0.5
+        self.w.create_line(0, linex, game_state.width*self.scale, linex)
         for j in (0,1):
             for i in xrange(len(game_state.states[j])):
                 radius = config.PLAYER_RADIUS * self.scale
