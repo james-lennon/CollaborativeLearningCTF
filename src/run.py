@@ -8,6 +8,7 @@ import time
 import atexit
 import sys
 from graphicsListener import GraphicsListener
+from teamAgents import *
 
 class DebugListener(GameListener):
 
@@ -165,16 +166,16 @@ def enemy_test(load=False):
 	game.add_agent(agent2, (0,0), 1)
 	game.add_agent(agent2b, (0,50), 1)
 
-	game.set_team_agent(TeamAgent(), 1)
+	game.set_team_agent(CollaborativeTeamAgent(), 1)
 
 	# simulate game
-	iterations = 10000
+	iterations = 8000
 
 	atexit.register(lambda: agent2.save_weights("enemy_weights.txt"))
 
 	game.start()
 	# agent2.debug = True
-	# run_for_iterations(game, iterations)
+	run_for_iterations(game, iterations)
 
 	agent2.debug = True
 	game.add_listener(TerminalListener())

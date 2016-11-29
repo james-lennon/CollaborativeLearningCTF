@@ -24,10 +24,18 @@ class QFunction(object):
 
     @classmethod
     def evaluate(cls, state_vector):
+
+        if not cls.is_initialized():
+            cls.setup(len(state_vector))
+
         return sum(map(lambda i: state_vector[i] * cls.weights[i], xrange(len(state_vector))))
 
     @classmethod
     def learn(cls, alpha, state_vector, action, old, new):
+
+        if not cls.is_initialized():
+            cls.setup(len(state_vector))
+
         delta = new - old
         update = lambda (w, f): w + alpha * delta * f
         cls.weights = map(update, zip(cls.weights, state_vector))

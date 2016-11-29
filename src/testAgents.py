@@ -39,12 +39,6 @@ class QLearningAgent(Agent):
 
 	def choose_action(self, state, game_state):
 
-		# check if we haven't initiazed weights yet
-		if not QFunction.is_initialized():
-			QFunction.setup(len(state.q_features(Action.stay)))
-
-		# adj = game_state.get_adjacent(state)
-
 		best_action = None
 		best_score  = None
 
@@ -76,10 +70,6 @@ class QLearningAgent(Agent):
 			print "jail"
 		if self.debug and reward == config.CAPTURE_FLAG_REWARD:
 			print "capture"
-
-		# check if we haven't initiazed weights yet
-		if not QFunction.is_initialized():
-			QFunction.setup(len(state.q_features(Action.stay)))
 
 		state_vector     = state.q_features(action)
 
