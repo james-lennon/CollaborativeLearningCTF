@@ -20,6 +20,20 @@ class HeuristicAgent(Agent):
                 best_action = a
                 best_score = score
 
+        threshold = 3 * config.PLAYER_RADIUS
+
+        if best_score <= threshold:
+            return best_action
+
+        target = game_state.flag_positions[state.team] if state.has_flag else game_state.flag_positions[other_team]
+        best_action = None
+        best_score = None
+        for a in adj:
+            score = util.distance(target, adj[a].pos)
+            if best_score is None or score < best_score:
+                best_action = a
+                best_score = score
+
         return best_action
 
 

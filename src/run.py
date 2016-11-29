@@ -158,7 +158,8 @@ def enemy_test(load=False):
 	agent2b = QLearningAgent(epsilon=0.5, alpha_decay=0.99)
 
 	if load:
-		agent2.load_weights("obstacle_weights.txt")
+		agent2.load_weights("enemy_weights.txt")
+		game.set_team_agent(CollaborativeTeamAgent(), 1)
 		agent2.alpha = 0
 
 	# add agents
@@ -166,7 +167,6 @@ def enemy_test(load=False):
 	game.add_agent(agent2, (0,0), 1)
 	game.add_agent(agent2b, (0,50), 1)
 
-	game.set_team_agent(CollaborativeTeamAgent(), 1)
 
 	# simulate game
 	iterations = 8000
@@ -175,7 +175,8 @@ def enemy_test(load=False):
 
 	game.start()
 	# agent2.debug = True
-	run_for_iterations(game, iterations)
+	if not load:
+		run_for_iterations(game, iterations)
 
 	agent2.debug = True
 	game.add_listener(TerminalListener())
