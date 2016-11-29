@@ -47,7 +47,8 @@ def single_agent_test(load=False):
 	agent.debug = True
 	# run_for_iterations(game, 50000)
 
-	game.add_listener(TerminalListener())
+	# game.add_listener(TerminalListener())
+	game.add_listener(GraphicsListener(game))
 
 	for _ in xrange(iterations):
 		game.loop()
@@ -79,7 +80,8 @@ def obstacle_test(load = False):
 	run_for_iterations(game, iterations)
 
 	agent2.debug = True
-	game.add_listener(TerminalListener())
+	# game.add_listener(TerminalListener())
+	game.add_listener(GraphicsListener(game))
 	agent2.epsilon = 0
 
 	for _ in xrange(iterations):
@@ -105,7 +107,8 @@ def neural_test(load=False):
 
 	# run_for_iterations(game, 50000)
 
-	game.add_listener(TerminalListener())
+	# game.add_listener(TerminalListener())
+	game.add_listener(GraphicsListener(game))
 
 	# agent.alpha = 0
 	# agent.epsilon = 0
@@ -142,7 +145,8 @@ def team_test(load=False):
 	run_for_iterations(game, iterations)
 
 	agent2.debug = True
-	game.add_listener(TerminalListener())
+	# game.add_listener(TerminalListener())
+	game.add_listener(GraphicsListener(game))
 	agent2.epsilon = 0
 	agent2b.epsilon = 0
 
@@ -179,8 +183,8 @@ def enemy_test(load=False):
 		run_for_iterations(game, iterations)
 
 	agent2.debug = True
-	game.add_listener(TerminalListener())
-	# game.add_listener(GraphicsListener(game))
+	# game.add_listener(TerminalListener())
+	game.add_listener(GraphicsListener(game))
 	# agent2.epsilon = 0
 	# agent2b.epsilon = 0
 
@@ -190,8 +194,8 @@ def enemy_test(load=False):
 
 
 
-# single_agent_test(True)
-# obstacle_test()
+# single_agent_test()
+obstacle_test()
 # neural_test(True)
 # team_test()
-enemy_test()
+# enemy_test()
