@@ -41,8 +41,8 @@ class GraphicsListener(GameListener):
             for i in xrange(len(game_state.states[j])):
                 radius = config.PLAYER_RADIUS * self.scale
 
-                flag_x = game_state.flag_positions[j][0]
-                flag_y = game_state.flag_positions[j][1]
+                flag_x = game_state.flag_positions[j][0]*self.scale
+                flag_y = game_state.flag_positions[j][1]*self.scale
                 # self.w.create_rectangle(flag_x, flag_y, flag_x+radius, flag_y+radius, fill="blue")
 
                 s = game_state.states[j][i]
