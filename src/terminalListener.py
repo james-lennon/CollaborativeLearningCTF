@@ -1,6 +1,6 @@
 # import Tk class (to create root window)
 # Frame class (container for other widgets)
-from PIL import Image, ImageTk
+# from PIL import Image, ImageTk
 from Tkinter import Tk, Label, BOTH
 from ttk import Frame, Style
 
