@@ -22,18 +22,38 @@ class GraphicsListener(GameListener):
 
         self.w.delete(ALL)
 
-        for j in (0,1):
+        # self.states = [[],[]]
+        # self.scores = []
 
+        # self.width  = width
+        # self.height = height
+        # self.game   = game
+
+        # self.flag_spawn_positions = [
+        #         (width/2.0, height/10.),
+        #         (width/2.0, height*9./10.)
+        #     ]
+        # self.flag_positions = copy.copy(self.flag_spawn_positions)
+        # print "FLAG POSITIONS"
+        # print game_state.flag_positions
+        
+        for j in (0,1):
             for i in xrange(len(game_state.states[j])):
-                s = game_state.states[j][i]
                 radius = config.PLAYER_RADIUS * self.scale
+
+                flag_x = game_state.flag_positions[j][0]
+                flag_y = game_state.flag_positions[j][1]
+                # self.w.create_rectangle(flag_x, flag_y, flag_x+radius, flag_y+radius, fill="blue")
+
+                s = game_state.states[j][i]
                 x = self.scale*s.pos[0]
                 y = self.scale*s.pos[1]
-
                 if j == 1: 
-                    self.w.create_oval(x, y, x+2*radius, y+2*radius, fill="green")
+                    self.w.create_oval(x, y, x+radius, y+radius, fill="green")
+                    self.w.create_rectangle(flag_x, flag_y, flag_x+radius, flag_y+radius, fill="green")
                 elif j == 0:
-                    self.w.create_oval(x, y, x+2*radius, y+2*radius, fill="red")
+                    self.w.create_oval(x, y, x+radius, y+radius, fill="red")
+                    self.w.create_rectangle(flag_x, flag_y, flag_x+radius, flag_y+radius, fill="red")
 
 
         self.master.update_idletasks()
