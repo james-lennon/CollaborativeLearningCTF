@@ -12,3 +12,7 @@ class Agent(object):
 		pass
 
 
+class TeamAgent(object):
+
+	def choose_actions(self, game_state, team):
+		return [Action.stay for _ in game_state.states[team]]
