@@ -84,7 +84,7 @@ class State(object):
 					nearby_count2 += 1
 
 		base_pos     = self.game.game_state.flag_spawn_positions[self.team]
-		opp_flag_pos = self.game.game_state.flag_positions[other_team]
+		opp_flag_pos = self.game.game_state.flag_spawn_positions[other_team]
 
 		if self.has_flag:
 			opp_flag_delta = 0
@@ -166,12 +166,16 @@ class TransitionModel(object):
 	def __init__(self):
 		self.jail_pos = (-1,-1)
 
-	def handle_tagging(self, state):
+	def handle_tagging(self, state, game_state):
+
+		other_team = state.team ^ 1
 
 		if state.tagged:
 			state.tagged   = False
 			state.jail     = True
 			state.pos      = self.jail_pos
+			if state.has_flag:
+				game_state.flag_positions[other_team] = game_state.flag_spawn_positions[other_team]
 			state.has_flag = False
 			return
 
@@ -250,8 +254,12 @@ class TransitionModel(object):
 
 		if state.has_flag and state.dist_base <= config.PLAYER_RADIUS:
 			state.has_flag = False
+			game_state.flag_positions[other_team] = game_state.flag_spawn_positions[other_team]
 
-		self.handle_tagging(state)
+		if state.has_flag:
+			game_state.flag_positions[other_team] = state.pos
+
+		self.handle_tagging(state, game_state)
 
 		return state
 
