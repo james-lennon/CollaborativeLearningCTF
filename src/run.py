@@ -143,6 +143,8 @@ def team_test(load=False):
 
 	agent2.debug = True
 	game.add_listener(TerminalListener())
+	game.add_listener(GraphicsListener(game))
+
 	agent2.epsilon = 0
 	agent2b.epsilon = 0
 
@@ -193,5 +195,5 @@ def enemy_test(load=False):
 # single_agent_test()
 # obstacle_test()
 # neural_test(True)
-# team_test()
-enemy_test(True)
+team_test()
+# enemy_test(True)
