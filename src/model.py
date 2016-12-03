@@ -78,7 +78,7 @@ class State(object):
 		nearby_count2   = 0
 		for p in new_state.opp_positions:
 			if util.distance(p, new_pos) <= nearby_distance:
-				if new_state.enemy_side:
+				if new_state.enemy_side or new_state.has_flag:
 					nearby_count1 += 1
 				else:
 					nearby_count2 += 1
@@ -87,15 +87,15 @@ class State(object):
 		opp_flag_pos = self.game.game_state.flag_spawn_positions[other_team]
 
 		opp_flag_dist = 0
-		target_dist = 0
+		target_dist   = 0
 
 		if self.has_flag:
 			opp_flag_delta = 0
 			target_delta   = pos_delta(base_pos)
-			target_dist = util.distance(new_state.pos, base_pos)
+			target_dist    = util.distance(new_state.pos, base_pos)
 		else:
 			opp_flag_delta = pos_delta(opp_flag_pos)
-			opp_flag_dist = util.distance(new_state.pos, opp_flag_pos)
+			opp_flag_dist  = util.distance(new_state.pos, opp_flag_pos)
 			target_delta   = 0
 
 		if not self.has_flag:
@@ -120,12 +120,13 @@ class State(object):
 		opp_flag_delta /= max_dist
 		target_delta   /= max_dist
 
-		diag = util.distance((0,0),(self.game.width, self.game.height))
+		diag = util.distance((0, 0), (self.game.width, self.game.height))
 
 		return [opp_flag_dist/diag] \
 		     + [target_dist/diag] \
 			 + [float(take_flag)] \
 			 + [float(capture_flag)] \
+			 + map(lambda p: util.distance(new_state.pos, p)/diag, new_state.team_positions) \
 			 + [float(new_state.jail or new_state.tagged)] \
 			 + [float(new_state.tagging)] \
 			 + [float(nearby_count1)] \
@@ -248,13 +249,9 @@ class TransitionModel(object):
 		state.dist_opp_flag = util.distance(state.pos, game_state.flag_positions[other_team])
 		state.dist_base     = util.distance(state.pos, game_state.flag_spawn_positions[state.team])
 
-		# if state.has_flag:
-		# 	opp_flag_pos = game_state.flag_spawn_positions[state.team]
-		# else:
-		# 	opp_flag_pos = game_state.flag_positions[other_team]
-		# state.dist_opp_flag = util.distance(state.pos, opp_flag_pos)
+		team_has_flag = any(map(lambda s: s.has_flag, game_state.states[state.team]))
 
-		if not state.has_flag and state.dist_opp_flag <= config.PLAYER_RADIUS:
+		if not state.has_flag and state.dist_opp_flag <= config.PLAYER_RADIUS and not team_has_flag:
 			state.has_flag = True
 
 		if state.has_flag and state.dist_base <= config.PLAYER_RADIUS:

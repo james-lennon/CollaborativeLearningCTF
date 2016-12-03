@@ -225,6 +225,8 @@ def learning_enemies_test(load=False):
 		game.set_team_agent(CollaborativeTeamAgent(), 1)
 		agent2.alpha = 0
 		agent2b.alpha = 0
+	# else:
+	# 	QFunction.load("enemy_weights.txt")
 
 	# add agents
 	game.add_agent(agent1, (5,10), 0)
@@ -244,8 +246,8 @@ def learning_enemies_test(load=False):
 
 	game.start()
 	# agent2.debug = True
-	# if not load:
-	# 	run_for_iterations(game, iterations)
+	if not load:
+		run_for_iterations(game, iterations)
 
 	agent2.debug = False
 	# game.add_listener(TerminalListener())
@@ -262,5 +264,5 @@ def learning_enemies_test(load=False):
 # obstacle_test()
 # neural_test(True)
 # team_test(True)
-enemy_test(True)
-# learning_enemies_test()
+# enemy_test(True)
+learning_enemies_test()
