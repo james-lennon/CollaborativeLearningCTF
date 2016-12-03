@@ -295,22 +295,23 @@ def visualize_test():
 	iterations = 10000
 
 
-	# game.start()
+	game.start()
 	# # agent2.debug = True
 	# if not load:
 	# 	run_for_iterations(game, iterations)
 
 	# agent2.debug = False
 	# game.add_listener(TerminalListener())
-	# game.add_listener(GraphicsListener(game))
+	game.add_listener(GraphicsListener(game))
+	game.add_listener(StateVisualization(game, 1, 0))
 	# agent2.epsilon = 0
 	# agent2b.epsilon = 0
 
-	# for _ in xrange(iterations):
-	# 	game.loop()
-	# 	time.sleep(.05)
+	for _ in xrange(iterations):
+		game.loop()
+		time.sleep(.05)
 
-	visualize_state(game.game_state, game.game_state.states[1][0])
+
 
 # single_agent_test(True)
 # obstacle_test()
