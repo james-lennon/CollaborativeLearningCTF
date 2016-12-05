@@ -143,7 +143,7 @@ class State(object):
 class GameState(object):
 	def __init__(self, width, height, game):
 		self.states = [[],[]]
-		self.scores = []
+		self.scores = [0, 0]
 
 		self.width  = width
 		self.height = height
@@ -295,6 +295,7 @@ class RewardModel(object):
 			return reward
 		elif state.has_flag and not new_state.has_flag and not state.jail:
 			reward += config.CAPTURE_FLAG_REWARD
+			game_state.scores[state.team] += 1
 			return reward
 
 		if state.has_flag:
@@ -307,6 +308,7 @@ class RewardModel(object):
 		# print "OD: {}, TD: {}".format(opp_flag_delta, target_delta)
 
 		q_features = state.q_features(action)
+
 
 		# reward for moving closer to flag
 		reward += config.FLAG_REWARD_WEIGHT * \
