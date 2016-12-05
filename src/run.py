@@ -261,40 +261,44 @@ def learning_enemies_test(load=False):
 		time.sleep(.05)
 
 def visualize_test():
+
 	game = Game(100, 100)
 
-	# agent1 = RandomAgent()
-	# agent1b = RandomAgent()
-	# agent1c = RandomAgent()
-	# agent1d = RandomAgent()
-	agent1 = Agent()
-	agent1b = Agent()
-	agent1c = Agent()
-	agent1d = Agent()
-	agent2 = QLearningAgent(epsilon=0.5, alpha=.2, alpha_decay = 1.0)
+	agent1 = QLearningAgent(epsilon=0.2, alpha=.2, alpha_decay=1.0)
+	agent1b = HeuristicAgent()
 
-	QFunction.load("obstacle_weights.txt")
+	agent2 = QLearningAgent(epsilon=0.2, alpha=.2, alpha_decay=1.0)
+	agent2b = HeuristicAgent()
+
+	QFunction.load("learning_weights.txt")
+	game.set_team_agent(CollaborativeTeamAgent(), 1)
+	agent2.alpha = 0
+	agent2b.alpha = 0
 
 	# add agents
-	game.add_agent(agent1, (53,15), 0)
-	game.add_agent(agent1b, (47,20), 0)
-	game.add_agent(agent1c, (53,30), 0)
-	game.add_agent(agent1d, (47,40), 0)
-	game.add_agent(agent2, (0,0), 1)
+	game.add_agent(agent1, (5,10), 0)
+	game.add_agent(agent1b, (95,10), 0)
+	# game.add_agent(agent1c, (95,10), 0)
+	# game.add_agent(agent1d, (95,10), 0)
+	game.add_agent(agent2, (100,50), 1)
+	game.add_agent(agent2b, (100,50), 1)
+	# game.add_agent(agent2c, (100,50), 1)
+	# game.add_agent(agent2d, (100,50), 1)
 
 	# simulate game
 	iterations = 10000
 
 	game.start()
 
+	# game.add_listener(TerminalListener())
 	game.add_listener(GraphicsListener(game))
 	game.add_listener(StateVisualization(game, 1, 0))
-	agent2.epsilon = 0.1
+	# agent2.epsilon = 0
+	# agent2b.epsilon = 0
 
 	for _ in xrange(iterations):
 		game.loop()
 		time.sleep(.05)
-
 
 
 # single_agent_test(True)
