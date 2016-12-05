@@ -1,5 +1,6 @@
 from Tkinter import *
 from copy import copy
+import random
 from game import GameListener
 from model import Action
 from qFunction import QFunction
@@ -20,21 +21,43 @@ class StateVisualization(GameListener):
 
     def handle_loop(self, game_state):
 
+        # if random.random() > .1:
+        #     return
+
         game = game_state.game
         state = copy(game_state.states[self.team][self.num])
 
         tile_width  = float(game.width) / self.resolution * self.scale
         tile_height = float(game.height) / self.resolution * self.scale
 
+        vmin = None
+        vmax = None
+        values = []
+
         for x in xrange(self.resolution):
             for y in xrange(self.resolution):
-                state.pos = (x, y)
-                value     = QFunction.evaluate(state.q_features(Action.stay))
-                # print value
-                scaled_value = (value + self.value_clip) / float(2*self.value_clip)
-                scaled_value = min(1, max(scaled_value, 0))
+                state.pos = (x*tile_width/self.scale, y*tile_height/self.scale)
+                tmp_state = game.transition_model.apply_action(state, Action.stay, game_state)
+                features  = tmp_state.q_features(Action.stay)
+                value     = QFunction.evaluate(features)
+
+                print tmp_state.pos, value, features[-3]
+                values.append(value)
+                if vmax is None or value > vmax:
+                    vmax = value
+                if vmin is None or value < vmin:
+                    vmin = value
+
+        self.w.delete(ALL)
+        i = 0
+        for x in xrange(self.resolution):
+            for y in xrange(self.resolution):
+                value = values[i]
+                scaled_value = (value - vmin) / float(vmax - vmin + 1)
                 color = colorString(scaled_value*255,0,0)
                 self.w.create_rectangle(x*tile_width, y*tile_height, (x+1)*tile_width, (y+1)*tile_height, fill=color)
+
+                i += 1
 
         self.master.update_idletasks()
         self.master.update()
