@@ -151,18 +151,15 @@ def team_test(load=False):
 	# if not load: run_for_iterations(game, iterations)
 
 	agent2.debug = True
-<<<<<<< HEAD
 	game.add_listener(TerminalListener())
 	game.add_listener(GraphicsListener(game))
 
 	agent2.epsilon = 0
 	agent2b.epsilon = 0
-=======
 	game.add_listener(GraphicsListener(game))
 	agent2.epsilon = 0.01
 	agent2b.epsilon = 0.01
->>>>>>> 7ef1a3c7a8f512b6bb010f2bbe72e501ab8a6050
-
+	
 	for _ in xrange(iterations):
 		game.loop()
 		time.sleep(.05)
