@@ -9,6 +9,7 @@ import atexit
 import sys
 from graphicsListener import GraphicsListener
 from teamAgents import *
+from stateVisualization import *
 
 class DebugListener(GameListener):
 
@@ -160,6 +161,10 @@ def team_test(load=False):
 	agent2.epsilon = 0.01
 	agent2b.epsilon = 0.01
 	
+	game.add_listener(GraphicsListener(game))
+	agent2.epsilon = 0.01
+	agent2b.epsilon = 0.01
+
 	for _ in xrange(iterations):
 		game.loop()
 		time.sleep(.05)
@@ -230,6 +235,8 @@ def learning_enemies_test(load=False):
 		game.set_team_agent(CollaborativeTeamAgent(), 1)
 		agent2.alpha = 0
 		agent2b.alpha = 0
+	# else:
+	# 	QFunction.load("enemy_weights.txt")
 
 	# add agents
 	game.add_agent(agent1, (5,10), 0)
@@ -249,12 +256,52 @@ def learning_enemies_test(load=False):
 
 	game.start()
 	# agent2.debug = True
-	# if not load:
-	# 	run_for_iterations(game, iterations)
+	if not load:
+		run_for_iterations(game, iterations)
 
 	agent2.debug = False
 	# game.add_listener(TerminalListener())
 	game.add_listener(GraphicsListener(game))
+	# agent2.epsilon = 0
+	# agent2b.epsilon = 0
+
+	for _ in xrange(iterations):
+		game.loop()
+		time.sleep(.05)
+
+def visualize_test():
+
+	game = Game(100, 100)
+
+	agent1 = QLearningAgent(epsilon=0.2, alpha=.2, alpha_decay=1.0)
+	agent1b = HeuristicAgent()
+
+	agent2 = QLearningAgent(epsilon=0.2, alpha=.2, alpha_decay=1.0)
+	agent2b = HeuristicAgent()
+
+	QFunction.load("learning_weights.txt")
+	game.set_team_agent(CollaborativeTeamAgent(), 1)
+	agent2.alpha = 0
+	agent2b.alpha = 0
+
+	# add agents
+	game.add_agent(agent1, (5,10), 0)
+	game.add_agent(agent1b, (95,10), 0)
+	# game.add_agent(agent1c, (95,10), 0)
+	# game.add_agent(agent1d, (95,10), 0)
+	game.add_agent(agent2, (100,50), 1)
+	game.add_agent(agent2b, (100,50), 1)
+	# game.add_agent(agent2c, (100,50), 1)
+	# game.add_agent(agent2d, (100,50), 1)
+
+	# simulate game
+	iterations = 10000
+
+	game.start()
+
+	# game.add_listener(TerminalListener())
+	game.add_listener(GraphicsListener(game))
+	game.add_listener(StateVisualization(game, 1, 0))
 	# agent2.epsilon = 0
 	# agent2b.epsilon = 0
 
@@ -269,5 +316,6 @@ def learning_enemies_test(load=False):
 # team_test()
 # enemy_test(True)
 # team_test(True)
-enemy_test(True)
+# enemy_test(True)
 # learning_enemies_test()
+visualize_test()
