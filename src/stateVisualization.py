@@ -54,7 +54,11 @@ class StateVisualization(GameListener):
             for y in xrange(self.resolution):
                 value = values[i]
                 scaled_value = (value - vmin) / float(vmax - vmin + 1)
-                color = colorString(scaled_value*255,0,0)
+
+                g = scaled_value*2 - 1 if scaled_value > .5 else 0
+                r = scaled_value*2 if scaled_value <= .5 else 0
+
+                color = colorString(r*255,g*255,0)
                 self.w.create_rectangle(x*tile_width, y*tile_height, (x+1)*tile_width, (y+1)*tile_height, fill=color)
 
                 i += 1
@@ -63,7 +67,7 @@ class StateVisualization(GameListener):
         self.master.update()
 
 
-def colorString(r,g,b):
+def colorString(r, g, b):
 
     color = '#%02x%02x%02x' % (r, g, b)
     return color
