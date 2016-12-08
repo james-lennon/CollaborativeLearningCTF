@@ -1,7 +1,11 @@
+import random
 from agent import *
 from qFunction import QFunction
 
 class CollaborativeTeamAgent(TeamAgent):
+
+    def __init__(self, epsilon = 0.01):
+        self.epsilon = epsilon
 
     def best_combination(self, i, states, game_state):
 
@@ -14,7 +18,7 @@ class CollaborativeTeamAgent(TeamAgent):
 
             actions, next = self.best_combination(i + 1, states, game_state)
             score = QFunction.evaluate(states[i].q_features(a)) + next
-            if best_score is None or score > best_score:
+            if best_score is None or score > best_score or random.random() < self.epsilon:
                 best_score = score
                 best_actions = [a] + actions
 

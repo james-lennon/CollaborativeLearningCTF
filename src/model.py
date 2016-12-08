@@ -126,12 +126,12 @@ class State(object):
 		     + [target_dist/diag] \
 			 + [float(take_flag)] \
 			 + [float(capture_flag)] \
-			 + map(lambda p: util.distance(new_state.pos, p)/diag, new_state.team_positions) \
 			 + [float(new_state.jail or new_state.tagged)] \
 			 + [float(new_state.tagging)] \
 			 + [float(nearby_count1)] \
 			 + [float(nearby_count2)] \
 			 + [bias]
+             # + map(lambda p: util.distance(new_state.pos, p)/diag, new_state.team_positions) \
 			 # \
 			 # map(pos_delta, team_pos) \
 			 # + map(pos_delta, map(lambda x: x.pos, self.game.game_state.states[other_team])) \

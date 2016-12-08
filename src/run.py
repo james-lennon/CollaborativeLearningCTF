@@ -300,8 +300,8 @@ def visualize_test():
 	game.start()
 
 	# game.add_listener(TerminalListener())
-	graphics = GraphicsListener(game, clear_screen=False)
-	game.add_listener(StateVisualization(game, 1, 0, root=graphics.master, canvas=graphics.w))
+	graphics = GraphicsListener(game, clear_screen=True)
+	# game.add_listener(StateVisualization(game, 1, 0, root=graphics.master, canvas=graphics.w))
 	game.add_listener(graphics)
 	# agent2.epsilon = 0
 	# agent2b.epsilon = 0
@@ -318,5 +318,5 @@ def visualize_test():
 # enemy_test(True)
 # team_test(True)
 # enemy_test(True)
-# learning_enemies_test()
+# learning_enemies_test(True)
 visualize_test()
