@@ -8,16 +8,19 @@ from qFunction import QFunction
 
 class StateVisualization(GameListener):
 
-    def __init__(self, game, team, num):
+    def __init__(self, game, team, num, root=Tk(), canvas=None):
         self.scale = 5.0
         self.resolution = 20
         self.value_clip = 30
         self.team = team
         self.num = num
 
-        self.master = Tk()
-        self.w      = Canvas(self.master, width=game.width*self.scale, height=game.height*self.scale)
-        self.w.pack()
+        self.master = root
+        if canvas is None:
+            self.w      = Canvas(self.master, width=game.width*self.scale, height=game.height*self.scale)
+            self.w.pack()
+        else:
+            self.w = canvas
 
     def handle_loop(self, game_state):
 
@@ -56,7 +59,7 @@ class StateVisualization(GameListener):
                 scaled_value = (value - vmin) / float(vmax - vmin + 1)
 
                 g = scaled_value*2 - 1 if scaled_value > .5 else 0
-                r = scaled_value*2 if scaled_value <= .5 else 0
+                r = 1 - scaled_value*2 if scaled_value <= .5 else 0
 
                 color = colorString(r*255,g*255,0)
                 self.w.create_rectangle(x*tile_width, y*tile_height, (x+1)*tile_width, (y+1)*tile_height, fill=color)

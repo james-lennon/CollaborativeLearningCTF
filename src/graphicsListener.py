@@ -9,7 +9,7 @@ import config
 
 class GraphicsListener(GameListener):
 
-    def __init__(self, game):
+    def __init__(self, game, clear_screen=True):
         self.scale = 5.0
 
         self.master = Tk()
@@ -21,10 +21,12 @@ class GraphicsListener(GameListener):
         # self.y.pack()
         # self.z.pack()
 
+        self.clear_screen = clear_screen
 
     def handle_loop(self, game_state):
 
-        self.w.delete(ALL)
+        if self.clear_screen:
+            self.w.delete(ALL)
 
         # self.states = [[],[]]
         # self.scores = []
