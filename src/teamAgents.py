@@ -7,6 +7,7 @@ class CollaborativeTeamAgent(TeamAgent):
     def __init__(self, epsilon = 0.01):
         self.epsilon = epsilon
 
+    # helper function to find best set of actions
     def best_combination(self, i, states, game_state):
 
         if i >= len(states):
@@ -25,4 +26,5 @@ class CollaborativeTeamAgent(TeamAgent):
         return (best_actions, best_score)
 
     def choose_actions(self, game_state, team):
+        # use helper function to find best team actions
         return self.best_combination(0, game_state.states[team], game_state)[0]

@@ -36,7 +36,5 @@ class HeuristicAgent(Agent):
 
         return best_action
 
-
-
     def observe_transition(self, state, action, reward, new_state):
         pass

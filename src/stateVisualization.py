@@ -24,9 +24,6 @@ class StateVisualization(GameListener):
 
     def handle_loop(self, game_state):
 
-        # if random.random() > .1:
-        #     return
-
         game = game_state.game
         state = copy(game_state.states[self.team][self.num])
 

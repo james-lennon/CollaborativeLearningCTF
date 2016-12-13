@@ -57,8 +57,6 @@ class QLearningAgent(Agent):
 		if random.random() < self.epsilon:
 			return random.choice(Action.all_actions())
 
-		# print "BEST: {}".format(best_action)
-		# self.epsilon *= .95
 		return best_action
 
 	def learn_q(self, state_vector, action, old, new):
@@ -78,8 +76,6 @@ class QLearningAgent(Agent):
 		if new_state.jail:
 			best_new_score = 0
 
-		# delta = self.gamma * best_new_score + reward - self.value_of_state(state_vector)
-
 		new_score = self.gamma * best_new_score + reward
 		old_score = self.value_of_state(state_vector)
 
@@ -92,13 +88,6 @@ class QLearningAgent(Agent):
 			print state_vector
 			print "action: {}, reward: {}, delta: {}, feature: {}".format(action, reward, new_score - old_score, state_vector[1])
 			print QFunction.weights
-		# print "REWARD: {}".format(reward)
-		# print "pos: {}, action: {}, reward: {}".format(state.pos, action, reward)
-		# print "score: {}, new score: {}".format(self.value_of_state(state_vector), best_new_score)
-		# print "delta: {}".format(delta)
-		# print "flag distance feature: {}".format(state_vector[2])
-		# print "flag distance feature weight: {}".format(self.weights[2])
-		# print "player distance feature weight: {}".format(self.weights[0])
 
 		self.alpha *= self.alpha_decay
 
@@ -111,7 +100,3 @@ class QLearningAgent(Agent):
 		QFunction.load(filename)
 
 		self.epsilon = 0
-		# self.alpha   = 0
-
-
-
