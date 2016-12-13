@@ -42,19 +42,6 @@ class State(object):
 		self.game = game
 		self.num  = num
 
-	def list_representation(self):
-
-		max_dist  = math.sqrt(self.game.width**2 + self.game.height**2)
-		normalize = lambda d: d / max_dist
-
-		return    map(normalize, self.dist_team)  \
-		        + map(normalize, self.dist_opps)  \
-		        + [normalize(self.dist_flag)]     \
-				+ [normalize(self.dist_opp_flag)] \
-				+ [int(self.has_flag)]            \
-				+ [int(self.flag_taken)]          \
-				+ [int(self.enemy_side)]
-
 	def q_features(self, action):
 
 		max_dist = config.PLAYER_SPEED
@@ -62,8 +49,6 @@ class State(object):
 		new_state = self.game.transition_model.apply_action(self, action, self.game.game_state)
 		new_pos   = new_state.pos
 
-		# new_pos   = util.normalized_move(self.pos, action, config.PLAYER_SPEED)
-		# new_pos   = util.make_in_range(new_pos, self.game.width, self.game.height)
 		pos_delta = lambda p: util.distance(new_pos, p) - util.distance(self.pos, p)
 
 		other_team = self.team ^ 1
@@ -131,13 +116,6 @@ class State(object):
 			 + [float(nearby_count1)] \
 			 + [float(nearby_count2)] \
 			 + [bias]
-             # + map(lambda p: util.distance(new_state.pos, p)/diag, new_state.team_positions) \
-			 # \
-			 # map(pos_delta, team_pos) \
-			 # + map(pos_delta, map(lambda x: x.pos, self.game.game_state.states[other_team])) \
-			 # +
-			 # + [int(self.enemy_side)]
-			 # + [pos_delta(self.game.game_state.flag_positions[self.team])] \
 
 
 class GameState(object):
@@ -304,11 +282,6 @@ class RewardModel(object):
 		else:
 			opp_flag_delta = state.dist_opp_flag - new_state.dist_opp_flag
 			target_delta   = 0
-
-		# print "OD: {}, TD: {}".format(opp_flag_delta, target_delta)
-
-		q_features = state.q_features(action)
-
 
 		# reward for moving closer to flag
 		reward += config.FLAG_REWARD_WEIGHT * \

@@ -15,11 +15,7 @@ class GraphicsListener(GameListener):
         self.master = Tk()
         self.game   = game
         self.w      = Canvas(self.master, width=game.width*self.scale, height=game.height*self.scale)
-        # self.y = Label(self.master, text="Hello World!", anchor = S)
-        # self.z = Label(self.master, text="Hello World!", anchor = NE)
         self.w.pack()
-        # self.y.pack()
-        # self.z.pack()
 
         self.clear_screen = clear_screen
 
@@ -27,22 +23,6 @@ class GraphicsListener(GameListener):
 
         if self.clear_screen:
             self.w.delete(ALL)
-
-        # self.states = [[],[]]
-        # self.scores = []
-
-        # self.width  = width
-        # self.height = height
-        # self.game   = game
-
-        # self.flag_spawn_positions = [
-        #         (width/2.0, height/10.),
-        #         (width/2.0, height*9./10.)
-        #     ]
-        # self.flag_positions = copy.copy(self.flag_spawn_positions)
-        # print "FLAG POSITIONS"
-        # print game_state.flag_positions
-        
         
         linex = game_state.height * self.scale * 0.5
         self.w.create_line(0, linex, game_state.width*self.scale, linex)
