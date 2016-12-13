@@ -47,7 +47,7 @@ def single_agent_test(load=False):
 	game.start()
 
 	# agent.debug = True
-	if not load: run_for_iterations(game, 50000)
+	if not load: run_for_iterations(game, 10000)
 
 	game.add_listener(GraphicsListener(game))
 
@@ -58,10 +58,6 @@ def single_agent_test(load=False):
 def obstacle_test(load = False):
 	game = Game(100, 100)
 
-	agent1 = RandomAgent()
-	agent1b = RandomAgent()
-	agent1c = RandomAgent()
-	agent1d = RandomAgent()
 	agent1 = Agent()
 	agent1b = Agent()
 	agent1c = Agent()
@@ -96,41 +92,13 @@ def obstacle_test(load = False):
 		game.loop()
 		time.sleep(.05)
 
-def neural_test(load=False):
-	game  = Game(50, 30)
-	agent = NeuralAgent()
-
-	if load:
-		agent.load_weights("neural_weights.txt")
-
-	# add agents
-	game.add_agent(agent, (25,15), 0)
-
-	# simulate game
-	iterations = 10000
-
-	atexit.register(lambda: agent.save_weights("neural_weights.txt"))
-
-	game.start()
-
-	# run_for_iterations(game, 50000)
-
-	game.add_listener(TerminalListener())
-
-	# agent.alpha = 0
-	# agent.epsilon = 0
-
-	for _ in xrange(iterations):
-		game.loop()
-		time.sleep(.05)
-
 def team_test(load=False):
 	game = Game(100, 100)
 
 	agent1 = Agent()
 	agent1b = Agent()
-	agent2 = QLearningAgent(epsilon=0.5, alpha=.2, alpha_decay = 1.0)
-	agent2b = QLearningAgent(epsilon=0.5, alpha=.2, alpha_decay = 1.0)
+	agent2 = QLearningAgent(epsilon=0.5, alpha=.2, alpha_decay=1.0)
+	agent2b = QLearningAgent(epsilon=0.5, alpha=.2, alpha_decay=1.0)
 
 	if load:
 		agent2.load_weights("team_weights.txt")
@@ -190,13 +158,9 @@ def enemy_test(load=False):
 	# add agents
 	game.add_agent(agent1, (5,10), 0)
 	game.add_agent(agent1b, (95,10), 0)
-	# game.add_agent(agent1c, (95,10), 0)
-	# game.add_agent(agent1d, (95,10), 0)
+
 	game.add_agent(agent2, (100,50), 1)
 	game.add_agent(agent2b, (0,50), 1)
-	# game.add_agent(agent2c, (100,50), 1)
-	# game.add_agent(agent2d, (100,50), 1)
-
 
 	# simulate game
 	iterations = 10000
@@ -209,10 +173,7 @@ def enemy_test(load=False):
 		run_for_iterations(game, iterations)
 
 	agent2.debug = True
-	# game.add_listener(TerminalListener())
 	game.add_listener(GraphicsListener(game))
-	# agent2.epsilon = 0
-	# agent2b.epsilon = 0
 
 	for _ in xrange(iterations):
 		game.loop()
@@ -223,31 +184,22 @@ def learning_enemies_test(load=False):
 
 	agent1 = QLearningAgent(epsilon=0.2, alpha=.2, alpha_decay=1.0)
 	agent1b = HeuristicAgent()
-	# agent1c = HeuristicAgent()
-	# agent1d = HeuristicAgent()
+
 	agent2 = QLearningAgent(epsilon=0.2, alpha=.2, alpha_decay=1.0)
 	agent2b = HeuristicAgent()
-	# agent2c = QLearningAgent(epsilon=0.5, alpha=.2, alpha_decay=1.0)
-	# agent2d = QLearningAgent(epsilon=0.5, alpha=.2, alpha_decay=1.0)
 
 	if load:
 		QFunction.load("learning_weights.txt")
 		game.set_team_agent(CollaborativeTeamAgent(), 1)
 		agent2.alpha = 0
 		agent2b.alpha = 0
-	# else:
-	# 	QFunction.load("enemy_weights.txt")
 
 	# add agents
 	game.add_agent(agent1, (5,10), 0)
 	game.add_agent(agent1b, (95,10), 0)
-	# game.add_agent(agent1c, (95,10), 0)
-	# game.add_agent(agent1d, (95,10), 0)
+
 	game.add_agent(agent2, (100,50), 1)
 	game.add_agent(agent2b, (100,50), 1)
-	# game.add_agent(agent2c, (100,50), 1)
-	# game.add_agent(agent2d, (100,50), 1)
-
 
 	# simulate game
 	iterations = 10000
@@ -260,10 +212,7 @@ def learning_enemies_test(load=False):
 		run_for_iterations(game, iterations)
 
 	agent2.debug = False
-	# game.add_listener(TerminalListener())
 	game.add_listener(GraphicsListener(game))
-	# agent2.epsilon = 0
-	# agent2b.epsilon = 0
 
 	for _ in xrange(iterations):
 		game.loop()
@@ -287,24 +236,18 @@ def visualize_test():
 	# add agents
 	game.add_agent(agent1, (5,10), 0)
 	game.add_agent(agent1b, (95,10), 0)
-	# game.add_agent(agent1c, (95,10), 0)
-	# game.add_agent(agent1d, (95,10), 0)
+
 	game.add_agent(agent2, (100,50), 1)
 	game.add_agent(agent2b, (100,50), 1)
-	# game.add_agent(agent2c, (100,50), 1)
-	# game.add_agent(agent2d, (100,50), 1)
 
 	# simulate game
 	iterations = 10000
 
 	game.start()
 
-	# game.add_listener(TerminalListener())
-	graphics = GraphicsListener(game, clear_screen=True)
-	# game.add_listener(StateVisualization(game, 1, 0, root=graphics.master, canvas=graphics.w))
+	graphics = GraphicsListener(game, clear_screen=False)
+	game.add_listener(StateVisualization(game, 1, 0, root=graphics.master, canvas=graphics.w))
 	game.add_listener(graphics)
-	# agent2.epsilon = 0
-	# agent2b.epsilon = 0
 
 	for _ in xrange(iterations):
 		game.loop()
@@ -315,7 +258,7 @@ def visualize_test():
 # obstacle_test()
 # neural_test(True)
 # team_test()
-# enemy_test(True)
+enemy_test()
 # team_test(True)
 # enemy_test(True)
 # learning_enemies_test(True)
