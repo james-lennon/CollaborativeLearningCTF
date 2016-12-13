@@ -114,17 +114,7 @@ def team_test(load=False):
 
 	game.start()
 	# agent2.debug = True
-	# if not load: run_for_iterations(game, iterations)
-
-	agent2.debug = True
-	game.add_listener(TerminalListener())
-	game.add_listener(GraphicsListener(game))
-
-	agent2.epsilon = 0
-	agent2b.epsilon = 0
-	game.add_listener(GraphicsListener(game))
-	agent2.epsilon = 0.01
-	agent2b.epsilon = 0.01
+	if not load: run_for_iterations(game, iterations)
 	
 	game.add_listener(GraphicsListener(game))
 	agent2.epsilon = 0.01
@@ -139,12 +129,8 @@ def enemy_test(load=False):
 
 	agent1 = HeuristicAgent()
 	agent1b = HeuristicAgent()
-	agent1c = HeuristicAgent()
-	agent1d = HeuristicAgent()
 	agent2 = QLearningAgent(epsilon=0.2, alpha=.2, alpha_decay=1.0)
 	agent2b = QLearningAgent(epsilon=0.5, alpha=.2, alpha_decay=1.0)
-	agent2c = QLearningAgent(epsilon=0.5, alpha=.2, alpha_decay=1.0)
-	agent2d = QLearningAgent(epsilon=0.5, alpha=.2, alpha_decay=1.0)
 
 	if load:
 		QFunction.load("enemy_weights.txt")
@@ -269,10 +255,6 @@ elif p == 2:
 elif p == 3:
 	enemy_test(l)
 elif p == 4:
-	team_test(l)
-elif p == 5:
-	enemy_test(l)
-elif p == 6:
 	learning_enemies_test(l)
-elif p == 7:
+elif p == 5:
 	visualize_test()
