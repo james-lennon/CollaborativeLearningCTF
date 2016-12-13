@@ -244,7 +244,7 @@ parser.add_argument('-r', dest='read', type=bool, nargs='?', const=True, help='r
 
 args = parser.parse_args()
 p    = args.part
-l    = args.load
+l    = args.read
 
 if p == 0:
 	single_agent_test(l)
