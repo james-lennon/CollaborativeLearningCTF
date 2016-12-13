@@ -1,12 +1,8 @@
-from game import *
-from agent import *
-from testAgents import *
+from qLearningAgent import QLearningAgent
 from heuristicAgent import *
-from neuralAgent import *
 from terminalListener import *
 import time
 import atexit
-import sys
 from graphicsListener import GraphicsListener
 from teamAgents import *
 from stateVisualization import *
