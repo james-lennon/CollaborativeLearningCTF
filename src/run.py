@@ -10,6 +10,7 @@ import sys
 from graphicsListener import GraphicsListener
 from teamAgents import *
 from stateVisualization import *
+import argparse
 
 class DebugListener(GameListener):
 
@@ -254,12 +255,28 @@ def visualize_test():
 		time.sleep(.05)
 
 
-# single_agent_test(True)
-# obstacle_test()
-# neural_test(True)
-# team_test()
-enemy_test()
-# team_test(True)
-# enemy_test(True)
-# learning_enemies_test(True)
-visualize_test()
+parser = argparse.ArgumentParser(description='Run a game simulation')
+
+parser.add_argument('-p', dest='part', type=int, help='which part of the run file', default=0)
+parser.add_argument('-l', dest='load', type=bool, nargs='?', const=True, help='load weights from local file', default=False)
+
+args = parser.parse_args()
+p    = args.part
+l    = args.load
+
+if p == 0:
+	single_agent_test(l)
+elif p == 1:
+	obstacle_test(l)
+elif p == 2:
+	team_test(l)
+elif p == 3:
+	enemy_test(l)
+elif p == 4:
+	team_test(l)
+elif p == 5:
+	enemy_test(l)
+elif p == 6:
+	learning_enemies_test(l)
+elif p == 7:
+	visualize_test()
