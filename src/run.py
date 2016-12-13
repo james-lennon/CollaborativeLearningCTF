@@ -240,7 +240,7 @@ def visualize_test():
 parser = argparse.ArgumentParser(description='Run a game simulation')
 
 parser.add_argument('-p', dest='part', type=int, help='which part of the run file', default=0)
-parser.add_argument('-l', dest='load', type=bool, nargs='?', const=True, help='load weights from local file', default=False)
+parser.add_argument('-r', dest='read', type=bool, nargs='?', const=True, help='read weights from local file', default=False)
 
 args = parser.parse_args()
 p    = args.part
