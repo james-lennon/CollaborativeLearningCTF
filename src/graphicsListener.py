@@ -44,7 +44,7 @@ class GraphicsListener(GameListener):
                 y = self.scale*s.pos[1]
                 if j == 1: 
                     self.w.create_text(game_state.width*self.scale*0.5, game_state.height*self.scale, anchor = S, text = "Score: " + str(game_state.scores[j]))
-                    if x == flag_x and y == flag_y: 
+                    if x == flag_x and y == flag_y:
                         self.w.create_oval(1.05*x, 1.05*y, x+radius, y+radius, fill="red")
                     else: 
                         self.w.create_oval(x, y, x+radius, y+radius, fill="red")
